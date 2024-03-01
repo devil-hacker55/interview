@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.ENUM("SELL", "RENT"),
                 // required: true,
             },
+            admin_status: {
+                type: DataTypes.ENUM("PENDING", "ACCEPTED","REJECTED"),
+                // required: true,
+            },
             propertyStatus: {
                 type: DataTypes.ENUM("UNDERCONSTRUCTION", "READY", "RESALE"),
                 // required: true,

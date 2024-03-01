@@ -19,6 +19,13 @@ const logger = require("../helpers/logger");
 const moment = require("moment");
 const models = require("../models");
 const {
+  hash,
+  generateJwtToken,
+  generateRefreshToken,
+  getRefreshToken,
+  randomTokenString,
+} = require("../helpers/token");
+const {
   getNumberOfDigits,
   getNumberWithZeros,
   sameBarcodeTwiceCheck,
@@ -26,6 +33,7 @@ const {
   getPagingData,
   addWithLeadingZeros,
 } = require("../utils/commonUtils");
+const { userTypes, roles } = require("../utils/strings");
 const { getUrl, deleteFile } = require("../helpers/aws-s3");
 
 for (let model of Object.keys(db)) {
@@ -54,7 +62,7 @@ for (let model of Object.keys(db)) {
 }
 
 module.exports = {
-  clientRegister: async (reqObj, googleLoginFlag, country) => {
+  clientRegister: async (reqObj) => {
     let userFound = await db.users.scope("withHash").findOne({
       where: {
         email: reqObj.email,
@@ -64,66 +72,68 @@ module.exports = {
     if (userFound)
       throw new createHttpError.Conflict("User Already Exists with this email");
 
-    reqObj.password = googleLoginFlag ? null : await hash(reqObj.password);
+    reqObj.password = await hash(reqObj.password);
     // reqObj.mobileotp = commonUtils.generateRandom(6)
     reqObj.emailotp = commonUtils.generateRandom(6);
     reqObj.otpExpires = moment().add(55, "m").toDate();
     reqObj.userType = userTypes.CLIENT;
 
-    let roleInstance = await rolesService.getRoleByName(roles.CLIENT);
+    //let roleInstance = await rolesService.getRoleByName(roles.CLIENT);
     let user;
     await db.sequelize.transaction(async (t) => {
-      user = await roleInstance.createUser(reqObj, {
-        transaction: t,
-      });
-      await user.createClient(
-        {},
-        {
-          transaction: t,
-        }
-      );
-      await roleInstance.addUser(user, {
-        transaction: t,
-      });
-      await user.setCountry(country, {
-        transaction: t,
-      });
-      logger.info(user.toJSON());
-      let trialPlan = await db.subscription_plans.findOne(
-        {
-          where: {
-            planName: "TRIAL PACK(30 Days)",
-          },
-        },
-        { transaction: t }
-      );
-      let userSubscription = await user.createUser_subscription(
-        {
-          startValidity: new moment().utc(),
-          endValidity: moment().utc().add(30, "days"),
-          isActive: true,
-          subscriptionPlanId: trialPlan.id,
-          paymentStatus: true,
-        },
-        {
-          transaction: t,
-        }
-      );
-      let planFeatures = await trialPlan.getFeatures(
-        {},
-        {
-          transaction: t,
-        }
-      );
-      // console.log(abc)
-      await userSubscription.setFeatures(planFeatures, {
-        transaction: t,
-      });
+      user = await db.users.create(reqObj)
+      // user = await roleInstance.createUser(reqObj, {
+      //   transaction: t,
+      // });
+      // await user.createClient(
+      //   {},
+      //   {
+      //     transaction: t,
+      //   }
+      // );
+      // await roleInstance.addUser(user, {
+      //   transaction: t,
+      // });
+      // await user.setCountry(country, {
+      //   transaction: t,
+      // });
+      // logger.info(user.toJSON());
+      // let trialPlan = await db.subscription_plans.findOne(
+      //   {
+      //     where: {
+      //       planName: "TRIAL PACK(30 Days)",
+      //     },
+      //   },
+      //   { transaction: t }
+      // );
+      // let userSubscription = await user.createUser_subscription(
+      //   {
+      //     startValidity: new moment().utc(),
+      //     endValidity: moment().utc().add(30, "days"),
+      //     isActive: true,
+      //     subscriptionPlanId: trialPlan.id,
+      //     paymentStatus: true,
+      //   },
+      //   {
+      //     transaction: t,
+      //   }
+      // );
+      // let planFeatures = await trialPlan.getFeatures(
+      //   {},
+      //   {
+      //     transaction: t,
+      //   }
+      // );
+      // // console.log(abc)
+      // await userSubscription.setFeatures(planFeatures, {
+      //   transaction: t,
+      // });
     });
 
     return {
-      ...commonUtils.basicDetails(user),
+      //...commonUtils.basicDetails(user),
       // mobileotp: reqObj.mobileotp,
+      user: user,
       emailotp: reqObj.emailotp,
     };
   },
@@ -197,7 +207,45 @@ module.exports = {
     if (!user) throw new createHttpError.NotFound("user not found");
     return user;
   },
+  verifyClientOtp: async (email, emailotp, mobileotp) => {
+    let user = await module.exports.getClientByEmail(email);
+    console.log(user);
+    // staticOTP
+    if (mobileotp == 9988 || emailotp == 9988) {
+      user.isVerified = true;
+      user.isActive = true;
+      user.emailotp = null;
+      await user.save();
+      return true;
+    }
+
+    console.log(moment.utc(user.otpExpires), "<", moment.utc());
+    console.log(moment.utc(user.otpExpires).isBefore(moment.utc()));
+
+    if (moment.utc(user.otpExpires).isBefore(moment.utc()))
+      throw new createHttpError.NotAcceptable("Otp expired");
+    if (user.userType != userTypes.CLIENT || user.userType != userTypes.WAREHOUSE || user.userType != userTypes.SHOP || user.emailotp != emailotp)
+      throw new createHttpError.NotAcceptable("Otp expired or invalid");
+    user.isVerified = true;
+    user.isActive = true;
+    user.emailotp = null;
+    await user.save();
+    return true;
+  },
+  getAdminClientByEmail: async (email) => {
+    let user = await db.users.scope("withHash").findOne({
+      where: {
+        email: email,
+        userType: {
+          [Op.or]: [userTypes.CLIENT],
+        },
+      },
+    });
+    if (!user) throw new createHttpError.NotFound("Client not found");
+    return user;
+  },
   addProperty: async (addProperty, propertyImages, address) => {
+    addProperty.adminStatus = "PENDING"
     let property = await db.properties.create(addProperty);
     let addr = await property.createUseraddress(address)
     await property.save()
@@ -212,20 +260,34 @@ module.exports = {
     //if (!user) throw new createHttpError.NotFound("user not found");
     return property;
   },
-  getAllProperty: async (userId, search, page, size,purpose) => {
-    console.log("HHHiii",purpose)
+  getAllProperty: async (userId, search, page, size, purpose, admin_status) => {
+    console.log("HHHiii", admin_status)
     const { limit, offset } = getPagination(page, size);
     let result = await db.properties.findAndCountAll({
       where: {
         //userId: userId,
+        // admin_status: {
+
+        // },
+        ...(admin_status && {
+          admin_status: {
+            [Op.eq]: admin_status,
+          },
+        }),
         ...(search && {
           [Op.or]: {
             propertyName: {
               [Op.like]: `%${search}%`,
             },
+
+          },
+        }),
+        ...(purpose && {
+          [Op.or]: {
             purpose: {
               [Op.like]: `%${purpose}%`,
             },
+
           },
         }),
       },
@@ -243,7 +305,7 @@ module.exports = {
       {
         model: db.categories,
       }
-    ],
+      ],
       //order: [["properties.createdAt", "desc"]],
       distinct: true,
       limit,
@@ -254,5 +316,9 @@ module.exports = {
       throw new createHttpError.NotFound("property not found");
     const response = getPagingData(result, page, limit);
     return response;
+  },
+  changeStatusOfProperty: async (reqObj) => {
+    let property = await db.properties.update({ admin_status: reqObj.admin_status }, { where: { id: reqObj.propertyId } });
+    return property;
   },
 };

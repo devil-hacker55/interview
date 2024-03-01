@@ -35,6 +35,7 @@ module.exports = {
 
   generateRefreshToken: function (user, ipAddress) {
     // create a refresh token that expires in 7 days
+    console.log("PPP>>>",user)
     return db.refreshTokens.build({
       userId: user.id,
       token: module.exports.randomTokenString(),

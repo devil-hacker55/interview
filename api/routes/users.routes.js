@@ -63,4 +63,10 @@ router.get(
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllProperty)
 );
+router.put(
+  "/changeStatusOfProperty",
+  //NewverifyUser([userTypes.CLIENT], permissions.SALES, accessLevel.CREATE),
+  //salesInvoicesValidate.changeStatusOfProperty,
+  PromiseHandler(userController.changeStatusOfProperty)
+);
 module.exports = router;

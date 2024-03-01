@@ -21,7 +21,12 @@ const commonUtils = require("../utils/commonUtils");
 const logger = require("../helpers/logger");
 const moment = require("moment");
 const { PromiseHandler } = require("../middleware/error.handler");
-
+const {
+  comparePassword,
+  hash,
+  generateJwtToken,
+  generateRefreshToken,
+} = require("../helpers/token");
 const { http } = require("winston");
 const { query } = require("express");
 const { date } = require("joi");
@@ -29,34 +34,26 @@ module.exports = {
   // client registeration function
   clientRegister: async (req, res, next) => {
     let reqObj = req.body;
-    if (req.google && req.google.alreadyRegistered) return next();
+    // if (req.google && req.google.alreadyRegistered) return next();
     logger.info(reqObj);
     console.log("register call");
-    let loginVerified = false;
-    if (req.google && req.google.loginVerified) loginVerified = true;
-    let country = await countryService.getCountryById(reqObj.countryId);
+    // let loginVerified = false;
+    // if (req.google && req.google.loginVerified) loginVerified = true;
+    // let country = await countryService.getCountryById(reqObj.countryId);
 
     let result = await userService.clientRegister(
-      reqObj,
-      loginVerified,
-      country
+      reqObj
     );
 
-    if (loginVerified) {
-      req.body = {
-        email: result.email,
-      };
-      return next();
-    }
     res.sendResponse(result);
     let msg = `<p>Please use the below OTP to register your account</p><p><h3>${result.emailotp}</h3></p>`;
     console.log(msg);
-    let mail = await sendEmail({
-      to: result.email,
-      subject: "Otp verification",
-      html: msg,
-    });
-    console.log(mail, loginVerified);
+    // let mail = await sendEmail({
+    //   to: result.email,
+    //   subject: "Otp verification",
+    //   html: msg,
+    // });
+    // console.log(mail, loginVerified);
   },
   // Client Login function
   clientLogin: async (req, res, next) => {
@@ -69,11 +66,11 @@ module.exports = {
 
     user.isSubscribed = false;
     user.isTrial = false;
-    let googleVerified = false;
-    req.google && req.google.loginVerified
-      ? (googleVerified = true)
-      : (googleVerified = false);
-    console.log("googleVerified", googleVerified);
+    // let googleVerified = false;
+    // req.google && req.google.loginVerified
+    //   ? (googleVerified = true)
+    //   : (googleVerified = false);
+    // console.log("googleVerified", googleVerified);
 
     if (!user.isVerified)
       throw new createHttpError.NotAcceptable("User Not Verified");
@@ -82,55 +79,56 @@ module.exports = {
     // true - with google
     // false - normal password email
 
-    if (googleVerified != true && user.isGoogleLogin != true) {
-      // static password for all users
-      if (reqObj.password != "9988")
-        if (!(await comparePassword(reqObj.password, user.password)))
-          throw new createHttpError.Unauthorized(
-            "user not found or wrong password"
-          );
-    } else if (googleVerified != true) {
-      throw new createHttpError.UnprocessableEntity(
-        "use forgot password or login with google"
-      );
-    }
+    //if (googleVerified != true && user.isGoogleLogin != true) {
+    // static password for all users
+    if (reqObj.password != "9988")
+      if (!(await comparePassword(reqObj.password, user.password)))
+        throw new createHttpError.Unauthorized(
+          "user not found or wrong password"
+        );
+    // } else if (googleVerified != true) {
+    //   throw new createHttpError.UnprocessableEntity(
+    //     "use forgot password or login with google"
+    //   );
+    // }
 
-    let adminRole = await user.getRoles({
-      where: {
-        roleName: roles.SUPERADMIN,
-        isRoot: true,
-      },
-    });
+    // let adminRole = await user.getRoles({
+    //   where: {
+    //     roleName: roles.SUPERADMIN,
+    //     isRoot: true,
+    //   },
+    // });
 
-    if (adminRole.length > 0) {
-      req.userdata = user;
-      return next();
-    }
-    let currentPlan = await user.getUser_subscriptions({
-      where: {
-        [Op.and]: db.sequelize.literal(
-          `isActive=1 AND paymentStatus=1 AND now() between user_subscriptions.startValidity AND user_subscriptions.endValidity`
-        ),
-      },
-    });
-    console.log(currentPlan);
-    if (currentPlan.length > 0) {
-      user.planExpiresOn = currentPlan[0].endValidity;
-      user.isSubscribed = true;
-      let subPlan = await currentPlan[0].getSubscription_plan();
-      subPlan.planLevel === 0 ? (user.isTrial = true) : (user.isTrial = false);
-    }
-    // emp fix
-    if (user.userType == userTypes.CLIENT)
-      await userService.checkProfileComplete(user);
+    // if (adminRole.length > 0) {
     req.userdata = user;
-    if (googleVerified) return next();
+    //   return next();
+    // }
+    // let currentPlan = await user.getUser_subscriptions({
+    //   where: {
+    //     [Op.and]: db.sequelize.literal(
+    //       `isActive=1 AND paymentStatus=1 AND now() between user_subscriptions.startValidity AND user_subscriptions.endValidity`
+    //     ),
+    //   },
+    // });
+    // console.log(currentPlan);
+    // if (currentPlan.length > 0) {
+    //   user.planExpiresOn = currentPlan[0].endValidity;
+    //   user.isSubscribed = true;
+    //   let subPlan = await currentPlan[0].getSubscription_plan();
+    //   subPlan.planLevel === 0 ? (user.isTrial = true) : (user.isTrial = false);
+    // }
+    // // emp fix
+    // if (user.userType == userTypes.CLIENT)
+    //   await userService.checkProfileComplete(user);
+    // req.userdata = user;
+    // if (googleVerified) return next();
     next();
   },
   // send tokens middleware
   sendToken: async (req, res, next) => {
     // authentication successful so generate jwt and refresh tokens
     let user = req.userdata;
+    console.log("PPP>>>11", req)
     let refreshToken = generateRefreshToken(user, req.ip);
     // save refresh token
     await refreshToken.save();
@@ -469,8 +467,16 @@ module.exports = {
       req.query.search,
       req.query.page,
       req.query.size,
-      req.query.purpose
+      req.query.purpose,
+      req.query.admin_status
     );
     res.sendResponse(result);
+  },
+  changeStatusOfProperty: async (req, res, next) => {
+    let reqObj = req.body;
+    let result = await userService.changeStatusOfProperty(reqObj);
+    return res.sendResponse({
+      msg: "success",
+    });
   },
 };
