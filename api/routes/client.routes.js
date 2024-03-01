@@ -1,5 +1,4 @@
 "use strict";
-
 /**
  * this module is used to define permissions routes(ALL)
  * @module client.routes
