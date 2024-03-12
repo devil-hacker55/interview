@@ -232,6 +232,7 @@ module.exports = {
     await user.save();
     return true;
   },
+  
   getAdminClientByEmail: async (email) => {
     let user = await db.users.scope("withHash").findOne({
       where: {
