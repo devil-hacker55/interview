@@ -13,19 +13,20 @@ module.exports = (sequelize, DataTypes) => {
 
 
       users.hasMany(models.refreshTokens, { onDelete: "CASCADE" });
-
+      users.hasMany(models.properties, { onDelete: "CASCADE" });
+      users.hasMany(models.property_visits, { onDelete: "CASCADE" });
 
       // users.hasMany(models.employees, { foreignKey: "parentId", targetKey: "id", as: "childemployees" })
-      users.hasMany(models.users, {
-        foreignKey: "parentId",
-        targetKey: "id",
-        as: "childs",
-      });
-      users.belongsTo(models.users, {
-        foreignKey: "parentId",
-        targetKey: "id",
-        as: "parent",
-      });
+      // users.hasMany(models.users, {
+      //   foreignKey: "parentId",
+      //   targetKey: "id",
+      //   as: "childs",
+      // });
+      // users.belongsTo(models.users, {
+      //   foreignKey: "parentId",
+      //   targetKey: "id",
+      //   as: "parent",
+      // });
 
       //features
     }

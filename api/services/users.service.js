@@ -35,6 +35,7 @@ const {
 } = require("../utils/commonUtils");
 const { userTypes, roles } = require("../utils/strings");
 const { getUrl, deleteFile } = require("../helpers/aws-s3");
+const { getUserId } = require("../controllers/users.controller");
 
 for (let model of Object.keys(db)) {
   if (models[model].name === "Sequelize") continue;
@@ -131,9 +132,9 @@ module.exports = {
     });
 
     return {
-      //...commonUtils.basicDetails(user),
+      ...commonUtils.basicDetails(user),
       // mobileotp: reqObj.mobileotp,
-      user: user,
+      //user: user,
       emailotp: reqObj.emailotp,
     };
   },
@@ -207,6 +208,27 @@ module.exports = {
     if (!user) throw new createHttpError.NotFound("user not found");
     return user;
   },
+  getPropertyById: async (id) => {
+    let user = await db.properties.findOne({
+      where: {
+        id: id,
+      },
+      include: [{
+        model: db.useraddresses,
+        required: false,
+      },
+      {
+        model: db.property_images,
+        required: false,
+      },
+      {
+        model: db.categories,
+        required: false,
+      }],
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
   verifyClientOtp: async (email, emailotp, mobileotp) => {
     let user = await module.exports.getClientByEmail(email);
     console.log(user);
@@ -224,7 +246,8 @@ module.exports = {
 
     if (moment.utc(user.otpExpires).isBefore(moment.utc()))
       throw new createHttpError.NotAcceptable("Otp expired");
-    if (user.userType != userTypes.CLIENT || user.userType != userTypes.WAREHOUSE || user.userType != userTypes.SHOP || user.emailotp != emailotp)
+    console.log("oo>>", user.userType, user.emailotp, emailotp)
+    if (user.userType != userTypes.CLIENT /*|| user.userType != userTypes.CUSTOMER */ || user.emailotp != emailotp)
       throw new createHttpError.NotAcceptable("Otp expired or invalid");
     user.isVerified = true;
     user.isActive = true;
@@ -232,7 +255,7 @@ module.exports = {
     await user.save();
     return true;
   },
-  
+
   getAdminClientByEmail: async (email) => {
     let user = await db.users.scope("withHash").findOne({
       where: {
@@ -245,10 +268,10 @@ module.exports = {
     if (!user) throw new createHttpError.NotFound("Client not found");
     return user;
   },
-  addProperty: async (addProperty, propertyImages, address) => {
-    addProperty.adminStatus = "PENDING"
-    let property = await db.properties.create(addProperty);
-    let addr = await property.createUseraddress(address)
+  addProperty: async (user, addProperty, propertyImages, address) => {
+    addProperty.admin_status = "PENDING"
+    let property = await user.createProperty(addProperty);
+    await property.createUseraddress(address)
     await property.save()
     if (propertyImages.length > 0) {
       let productImagesData = propertyImages.map((image) => ({
@@ -258,23 +281,19 @@ module.exports = {
       await db.property_images.bulkCreate(productImagesData);
       console.log("This is image field", productImagesData);
     }
-    //if (!user) throw new createHttpError.NotFound("user not found");
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status) => {
-    console.log("HHHiii", admin_status)
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType) => {
     const { limit, offset } = getPagination(page, size);
+    console.log("us", userId)
     let result = await db.properties.findAndCountAll({
       where: {
-        //userId: userId,
-        // admin_status: {
+        ...(userId && { userId: userId }),
 
-        // },
-        ...(admin_status && {
-          admin_status: {
-            [Op.eq]: admin_status,
-          },
-        }),
+        ...(admin_status && { admin_status: admin_status }),
+
+        ...(roomType && { roomType: roomType }),
+
         ...(search && {
           [Op.or]: {
             propertyName: {
@@ -283,43 +302,220 @@ module.exports = {
 
           },
         }),
-        ...(purpose && {
-          [Op.or]: {
-            purpose: {
-              [Op.like]: `%${purpose}%`,
-            },
 
-          },
-        }),
+        ...(purpose && { purpose: purpose }),
+
       },
+      attributes: [
+        "id",
+        "propertyName",
+        "purpose",
+        "admin_status",
+        "propertyStatus",
+        "propertyType",
+        "roomType",
+        "no_of_balconies",
+        "No_of_bathrooms",
+        "additional_rooms",
+        "facing",
+        "ownership",
+        "floor",
+        "furnishing",
+        "parking",
+        "floor_plan",
+        "brochure",
+        "isActive",
+        "isVerified",
+        "salePrice",
+        "area",
+        "booking_amt_percentage",
+        "maintenance_price",
+        "possession",
+        "rera_number",
+        "description",
+        "isDeleted",
+        "lift",
+        "wifi",
+        "club_house",
+        "swimming_pool",
+        "reserved_parking",
+        "security",
+        "park",
+        "gym",
+        "power_back_up",
+        "water_storage",
+        "createdAt"
+      ],
       include: [{
         model: db.useraddresses,
-        //attributes: ["partyName", "gstIn", "totalDebt", "totalCredit"],
-        // where: {
-        //   ...(partyName && {
-        //     partyName: partyName,
-        //   }),
-        // }
-      }, {
+        where: {
+          ...(city && {
+            city: {
+              [Op.like]: `%${city}%`,
+            },
+          }),
+        },
+      },
+      {
         model: db.property_images,
+        required: false,
       },
       {
         model: db.categories,
-      }
-      ],
-      //order: [["properties.createdAt", "desc"]],
+
+        where: {
+          ...(category && {
+            category: {
+              [Op.like]: `%${category}%`,
+            },
+          }),
+        },
+      }],
       distinct: true,
+      order: [["createdAt", "desc"]],
+
       limit,
       offset,
     });
 
     if (result.rows.length <= 0)
-      throw new createHttpError.NotFound("property not found");
+      throw new createHttpError.NotFound("No properties found");
     const response = getPagingData(result, page, limit);
     return response;
+  },
+  getAllCategory: async (search) => {
+    let addr = await db.categories.findAndCountAll({
+      attributes: ['id', 'category'],
+      where: {
+        ...(search) && {
+          [Op.or]: {
+            category: {
+              [Op.like]: `%${search}%`
+            }
+          }
+        },
+      },
+    })
+    if (addr.rows <= 0) throw new createHttpError.NotFound("data not found")
+    return addr
   },
   changeStatusOfProperty: async (reqObj) => {
     let property = await db.properties.update({ admin_status: reqObj.admin_status }, { where: { id: reqObj.propertyId } });
     return property;
+  },
+  // dashboardCount1: async (userId) => {
+  //   let property = await db.properties.findAll({
+  //     where: {
+  //       ...(userId && { userId: userId }),
+  //     },
+  //     attributes: [
+  //       [db.sequelize.fn("COALESCE", db.sequelize.fn("SUM", db.sequelize.col("id")), 0), "total_properties"],
+  //       [db.sequelize.fn("COALESCE", db.sequelize.fn("SUM", db.sequelize.col("purpose")), 0), "total_properties"]
+  //     ]
+  //   })
+  //   return property;
+  // },
+
+  dashboardCount: async (userId) => {
+    let counts = await db.properties.findAll({
+      where: {
+        ...(userId && { userId: userId }),
+      },
+      attributes: [
+        [db.sequelize.fn("COALESCE", db.sequelize.fn("COUNT", db.sequelize.col("*")), 0), "total_properties"],
+        [db.sequelize.fn("SUM", db.sequelize.literal("CASE WHEN purpose = 'SELL' THEN 1 ELSE 0 END")), "sell_properties"],
+        [db.sequelize.fn("SUM", db.sequelize.literal("CASE WHEN purpose = 'RENT' THEN 1 ELSE 0 END")), "rent_properties"]
+      ],
+      raw: true,
+      //group: []
+    });
+    let totalCount = counts.reduce((acc, curr) => acc + curr.total_properties, 0);
+    let sellCount = parseInt(counts[0].sell_properties) || 0; // Parse to integer
+    let rentCount = parseInt(counts[0].rent_properties) || 0; // Parse to integer
+
+    return {
+      total_properties: totalCount,
+      sell_properties: sellCount,
+      rent_properties: rentCount,
+    };
+  },
+
+  contactProperty: async (userId, propertyId) => {
+    await module.exports.getUserById(userId);
+    await module.exports.getPropertyById(propertyId);
+    let existingVisit = await db.property_visits.findOne({
+      where: {
+        userId: userId,
+        propertyId: propertyId
+      }
+    });
+    console.log(existingVisit)
+    if (existingVisit) {
+      // If an existing visit record is found, update the visitedAt timestamp
+      let countValue = existingVisit.count
+      await existingVisit.update({ contactedAt: new Date(), count: countValue + 1 });
+
+      console.log(`Property visit updated: Client ${userId}, Property ${propertyId}`);
+    } else {
+      // If no existing visit record is found, create a new one
+      await db.property_visits.create({
+        userId: userId,
+        propertyId: propertyId,
+        count: 1,
+        contactedAt: new Date() // Current timestamp
+      });
+
+      return true
+    }
+  },
+  getAllPropertyVisits: async (userId, page, size,) => {
+    const { limit, offset } = getPagination(page, size);
+    console.log("us", userId)
+    let result = await db.property_visits.findAndCountAll({
+      // where: {
+      //   ...(userId && { userId: userId }),
+
+      //   ...(admin_status && { admin_status: admin_status }),
+
+      //   ...(roomType && { roomType: roomType }),
+
+      //   ...(search && {
+      //     [Op.or]: {
+      //       propertyName: {
+      //         [Op.like]: `%${search}%`,
+      //       },
+
+      //     },
+      //   }),
+
+      //   ...(purpose && { purpose: purpose }),
+
+      // },
+      include: [{
+        model: db.properties,
+        // where: {
+        //   ...(city && {
+        //     city: {
+        //       [Op.like]: `%${city}%`,
+        //     },
+        //   }),
+        // },
+      },
+      {
+        model: db.users,
+        required: false,
+      }
+      ],
+      distinct: true,
+      order: [["createdAt", "desc"]],
+
+      limit,
+      offset,
+    });
+
+    if (result.rows.length <= 0)
+      throw new createHttpError.NotFound("No properties found");
+    const response = getPagingData(result, page, limit);
+    return response;
   },
 };

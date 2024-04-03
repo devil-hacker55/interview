@@ -14,7 +14,9 @@ const express = require("express");
 const router = express.Router();
 const { PromiseHandler } = require("../middleware/error.handler");
 const userController = require("../controllers/users.controller");
-
+const authorizeNew = require('../middleware/auth')
+const { permissions, accessLevel, userTypes } = require('../utils/strings');
+const { imageUpload, deleteFile } = require("../helpers/aws-s3");
 const fs = require("fs");
 const path = require("path");
 
@@ -51,22 +53,62 @@ router.post(
 );
 
 router.post(
-  "/addProperty",
-  //NewverifyUser([userTypes.CLIENT], permissions.PRODUCTS, accessLevel.CREATE),
+  "/addProperty/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.addProperty)
 );
 
 router.get(
+  "/getAllCategory",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllCategory)
+);
+
+router.get(
   "/getAllProperty",
-  //NewverifyUser([userTypes.CLIENT], permissions.PRODUCTS, accessLevel.CREATE),
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllProperty)
 );
 router.put(
   "/changeStatusOfProperty",
-  //NewverifyUser([userTypes.CLIENT], permissions.SALES, accessLevel.CREATE),
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
   //salesInvoicesValidate.changeStatusOfProperty,
   PromiseHandler(userController.changeStatusOfProperty)
+);
+
+router.get(
+  "/dashboardCount",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.dashboardCount)
+);
+
+router.post(
+  "/uploadImage",
+  imageUpload,
+  PromiseHandler(userController.saveUploadImage)
+);
+
+router.post(
+  "/contactProperty/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.contactProperty)
+);
+
+router.get(
+  "/getAllPropertyVisits/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllPropertyVisits)
+);
+router.get(
+  "/getPropertyById/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getPropertyById)
 );
 module.exports = router;

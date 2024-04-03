@@ -9,22 +9,24 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            properties.hasOne(models.clients);
+            //properties.hasOne(models.clients);
             properties.hasOne(models.useraddresses);
 
             properties.hasMany(models.refreshTokens, { onDelete: "CASCADE" });
             properties.hasMany(models.property_images);
-            properties.hasMany(models.properties, {
-                foreignKey: "parentId",
-                targetKey: "id",
-                as: "childs",
-            });
-            properties.belongsTo(models.properties, {
-                foreignKey: "parentId",
-                targetKey: "id",
-                as: "parent",
-            });
+            properties.hasMany(models.property_visits);
+            // properties.hasMany(models.properties, {
+            //     foreignKey: "parentId",
+            //     targetKey: "id",
+            //     as: "childs",
+            // });
+            // properties.belongsTo(models.properties, {
+            //     foreignKey: "parentId",
+            //     targetKey: "id",
+            //     as: "parent",
+            // });
             properties.belongsTo(models.categories)
+            properties.belongsTo(models.users)
             //features
         }
     }

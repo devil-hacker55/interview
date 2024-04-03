@@ -5,11 +5,11 @@ const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
 
-const AWS_Bucket_Name = "sujay-images";
+const AWS_Bucket_Name = "propertyimagesnew";
 
 const s3 = new aws.S3({
-  accessKeyId: "sujay",
-  secretAccessKey: "sujay",
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
   signatureVersion: 'v4',
   region: 'ap-south-1'
 });
@@ -39,6 +39,7 @@ const imageUpload = multer({
   storage: multerS3({
     s3: s3,
     bucket: AWS_Bucket_Name,
+    //acl: 'public-read',
 
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
@@ -53,7 +54,7 @@ const imageUpload = multer({
     contentType: multerS3.AUTO_CONTENT_TYPE,
   }),
   limits: {
-    fileSize: 1024 * 1024 * 6, // we are allowing only 5 MB files
+    fileSize: 1024 * 1024 * 10, // we are allowing only 10 MB files
   },
   fileFilter: function (req, file, cb) {
     console.log("file filter>>>>>>>>>>", file);

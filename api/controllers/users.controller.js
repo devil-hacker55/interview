@@ -455,21 +455,29 @@ module.exports = {
   },
   addProperty: async (req, res, next) => {
     let { addProperty, propertyImages, address } = req.body;
-    // let reqObj = req.body;
-
-    let result = await userService.addProperty(addProperty, propertyImages, address);
+    let userId = req.params.userId
+    let user = await userService.getUserById(userId);
+    await userService.addProperty(user, addProperty, propertyImages, address);
 
     return res.sendResponse("Property added!");
   },
   getAllProperty: async (req, res, next) => {
     let result = await userService.getAllProperty(
-      req.params.userId,
+      req.query.userId,
       req.query.search,
       req.query.page,
       req.query.size,
       req.query.purpose,
-      req.query.admin_status
+      req.query.admin_status,
+      req.query.city,
+      req.query.category,
+      req.query.roomType
     );
+    res.sendResponse(result);
+  },
+  getAllCategory: async (req, res, next) => {
+    let search = req.query.search
+    let result = await userService.getAllCategory(search)
     res.sendResponse(result);
   },
   changeStatusOfProperty: async (req, res, next) => {
@@ -478,5 +486,51 @@ module.exports = {
     return res.sendResponse({
       msg: "success",
     });
+  },
+  dashboardCount: async (req, res, next) => {
+    let result = await userService.dashboardCount(
+      req.query.userId,
+      req.query.search,
+      req.query.page,
+      req.query.size,
+      req.query.purpose,
+      req.query.admin_status
+    );
+    res.sendResponse(result);
+  },
+
+  saveUploadImage: async (req, res, next) => {
+    if (!req.file || !req.file.key) {
+      throw new createHttpError.ExpectationFailed("Image file link  not found");
+    }
+    console.log("File uploaded successfully.", req.file);
+    console.log(req.file);
+    res.sendResponse(
+      {
+        location: req.file.key,
+      },
+      "Image Uploaded Successfully"
+    );
+  },
+
+  contactProperty: async (req, res, next) => {
+    let userId = req.params.userId
+    let propertyId = req.body.propertyId
+    let result = await userService.contactProperty(userId, propertyId);
+    res.sendResponse(result);
+  },
+
+  getAllPropertyVisits: async (req, res, next) => {
+    await userService.getUserById(req.params.userId)
+    let result = await userService.getAllPropertyVisits(
+      req.params.userId,
+      req.query.page,
+      req.query.size,
+    );
+    res.sendResponse(result);
+  },
+  getPropertyById: async (req, res, next) => {
+    let result =await userService.getPropertyById(req.params.userId)   
+    res.sendResponse(result);
   },
 };
