@@ -75,7 +75,7 @@ const imageUpload = multer({
       cb(new createHttpError.BadRequest("Invalid file type"), false);
     }
   },
-}).single("upload", 1);
+}).single("file", 1);
 
 module.exports = {
   imageUpload,

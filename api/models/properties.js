@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
             properties.hasMany(models.refreshTokens, { onDelete: "CASCADE" });
             properties.hasMany(models.property_images);
             properties.hasMany(models.property_visits);
+            properties.hasMany(models.likes);
             // properties.hasMany(models.properties, {
             //     foreignKey: "parentId",
             //     targetKey: "id",
@@ -142,6 +143,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            coverImage:{
+                type:DataTypes.STRING,
+                defaultValue:null
+            }
 
         },
         {

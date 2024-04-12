@@ -344,6 +344,7 @@ module.exports = {
         "gym",
         "power_back_up",
         "water_storage",
+        "coverImage",
         "createdAt"
       ],
       include: [{
@@ -517,5 +518,34 @@ module.exports = {
       throw new createHttpError.NotFound("No properties found");
     const response = getPagingData(result, page, limit);
     return response;
+  },
+  likeProperty: async (user, propertyId) => {
+    await module.exports.getPropertyById(propertyId);
+
+    //console.log("addFcmKey Service Called ::", reqObj)
+
+    let [result, isCreated] = await db.likes.findOrCreate({
+      where: { propertyId: propertyId, userId: user.id },
+      //defaults: reqObj,
+    })
+
+    console.log("addFcmKey Service Called 1111::", result)
+    console.log("addFcmKey Service Called 222::", isCreated)
+    if (!isCreated) {
+      // result.set(reqObj)
+      // result.save()
+      throw new createHttpError.Conflict("Already liked")
+    }
+    return result;
+
+  },
+  getUserLikedProperties: async (user) => {
+    let data = await user.getLikes({
+      include: {
+        model: db.properties
+      }
+    })
+    return data;
+
   },
 };

@@ -111,4 +111,18 @@ router.get(
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getPropertyById)
 );
+
+router.post(
+  "/likeProperty/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.likeProperty)
+);
+
+router.get(
+  "/getUserLikedProperties/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getUserLikedProperties)
+);
 module.exports = router;

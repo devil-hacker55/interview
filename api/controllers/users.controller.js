@@ -12,12 +12,10 @@
 
 // required
 const db = require("../models");
-const { Op } = require("sequelize");
-const { roles, userTypes } = require("../utils/strings");
 const userService = require("../services/users.service");
 const createHttpError = require("http-errors");
 const commonUtils = require("../utils/commonUtils");
-
+const { deleteFile, getUrl } = require("../helpers/aws-s3");
 const logger = require("../helpers/logger");
 const moment = require("moment");
 const { PromiseHandler } = require("../middleware/error.handler");
@@ -27,9 +25,6 @@ const {
   generateJwtToken,
   generateRefreshToken,
 } = require("../helpers/token");
-const { http } = require("winston");
-const { query } = require("express");
-const { date } = require("joi");
 module.exports = {
   // client registeration function
   clientRegister: async (req, res, next) => {
@@ -473,6 +468,13 @@ module.exports = {
       req.query.category,
       req.query.roomType
     );
+    if (result.totalrows <= 0) {
+      throw new createHttpError.NotFound("No properties found");
+    } else {
+      for (const e of result.pageData) {
+        e.coverImage = e.coverImage ? await getUrl(e.coverImage) : e.coverImage;
+      }
+    }
     res.sendResponse(result);
   },
   getAllCategory: async (req, res, next) => {
@@ -530,7 +532,30 @@ module.exports = {
     res.sendResponse(result);
   },
   getPropertyById: async (req, res, next) => {
-    let result =await userService.getPropertyById(req.params.userId)   
+    let result = await userService.getPropertyById(req.params.userId)
+    result.coverImage = result.coverImage
+      ? await getUrl(result.coverImage)
+      : null;
+
+    for (let index = 0; index < result.property_images.length; index++) {
+      const el = result.property_images[index];
+      el.productImage = el.productImage ? await getUrl(el.productImage) : null;
+      result.property_images[index] = el;
+    }
+    res.sendResponse(result);
+  },
+
+  likeProperty: async (req, res, next) => {
+    let userId = req.params.userId
+    let user = await userService.getUserById(userId)
+    let propertyId = req.body.propertyId
+    let result = await userService.likeProperty(user, propertyId);
+    res.sendResponse(result);
+  },
+  getUserLikedProperties: async (req, res, next) => {
+    let userId = req.params.userId
+    let user = await userService.getUserById(userId)
+    let result = await userService.getUserLikedProperties(user);
     res.sendResponse(result);
   },
 };
