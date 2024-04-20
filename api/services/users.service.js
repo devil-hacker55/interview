@@ -139,6 +139,7 @@ module.exports = {
     };
   },
 
+
   customerRegister: async (reqObj) => {
     let userFound = await db.users.scope("withHash").findOne({
       where: {
@@ -350,11 +351,7 @@ module.exports = {
       include: [{
         model: db.useraddresses,
         where: {
-          ...(city && {
-            city: {
-              [Op.like]: `%${city}%`,
-            },
-          }),
+          ...(city && { city: city }),
         },
       },
       {
