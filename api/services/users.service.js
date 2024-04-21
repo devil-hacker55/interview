@@ -262,7 +262,7 @@ module.exports = {
       where: {
         email: email,
         userType: {
-          [Op.or]: [userTypes.CLIENT],
+          [Op.or]: [userTypes.CLIENT,userTypes.SA],
         },
       },
     });
