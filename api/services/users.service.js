@@ -529,9 +529,9 @@ module.exports = {
     console.log("addFcmKey Service Called 1111::", result)
     console.log("addFcmKey Service Called 222::", isCreated)
     if (!isCreated) {
-      // result.set(reqObj)
+      result.destroy(result)
       // result.save()
-      throw new createHttpError.Conflict("Already liked")
+      throw new createHttpError.Conflict("unliked successfully")
     }
     return result;
 

@@ -474,6 +474,22 @@ module.exports = {
       for (const e of result.pageData) {
         e.coverImage = e.coverImage ? await getUrl(e.coverImage) : e.coverImage;
       }
+      console.log("PP",result.pageData)
+
+      // for (let index = 0; index < array.length; index++) {
+      //   const element = array[index];
+        
+      // }
+      for (let index = 0; index < result.pageData.length; index++) {
+        const el = result.pageData[index];
+        for (let index = 0; index < el.property_images.length; index++) {
+          const element2 = el.property_images[index];
+          element2.productImage = element2.productImage ? await getUrl(element2.productImage) : null;
+          el.property_images[index] = element2;
+        }
+        
+        
+      }
     }
     res.sendResponse(result);
   },
