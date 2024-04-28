@@ -74,9 +74,16 @@ router.get(
 );
 router.put(
   "/changeStatusOfProperty",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN]),
   //salesInvoicesValidate.changeStatusOfProperty,
   PromiseHandler(userController.changeStatusOfProperty)
+);
+
+router.put(
+  "/changeStatusOfPromoteAs",
+  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN]),
+  //salesInvoicesValidate.changeStatusOfProperty,
+  PromiseHandler(userController.changeStatusOfPromoteAs)
 );
 
 router.get(

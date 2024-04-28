@@ -452,6 +452,7 @@ module.exports = {
     let { addProperty, propertyImages, address } = req.body;
     let userId = req.params.userId
     let user = await userService.getUserById(userId);
+    addProperty.promoteAs = "NORMAL"
     await userService.addProperty(user, addProperty, propertyImages, address);
 
     return res.sendResponse("Property added!");
@@ -467,7 +468,8 @@ module.exports = {
       req.query.city,
       req.query.category,
       req.query.roomType,
-      req.query.propertyStatus
+      req.query.propertyStatus,
+      req.query.promoteAs
     );
     if (result.totalrows <= 0) {
       res.sendResponse(result);
@@ -480,7 +482,7 @@ module.exports = {
 
       // for (let index = 0; index < array.length; index++) {
       //   const element = array[index];
-        
+
       // }
       for (let index = 0; index < result.pageData.length; index++) {
         const el = result.pageData[index];
@@ -489,8 +491,8 @@ module.exports = {
           element2.productImage = element2.productImage ? await getUrl(element2.productImage) : null;
           el.property_images[index] = element2;
         }
-        
-        
+
+
       }
     }
     res.sendResponse(result);
@@ -502,7 +504,14 @@ module.exports = {
   },
   changeStatusOfProperty: async (req, res, next) => {
     let reqObj = req.body;
-    let result = await userService.changeStatusOfProperty(reqObj);
+    await userService.changeStatusOfProperty(reqObj);
+    return res.sendResponse({
+      msg: "success",
+    });
+  },
+  changeStatusOfPromoteAs: async (req, res, next) => {
+    let reqObj = req.body;
+    await userService.changeStatusOfPromoteAs(reqObj);
     return res.sendResponse({
       msg: "success",
     });
@@ -510,11 +519,11 @@ module.exports = {
   dashboardCount: async (req, res, next) => {
     let result = await userService.dashboardCount(
       req.query.userId,
-      req.query.search,
-      req.query.page,
-      req.query.size,
-      req.query.purpose,
-      req.query.admin_status
+      // req.query.search,
+      // req.query.page,
+      // req.query.size,
+      // req.query.purpose,
+      // req.query.admin_status
     );
     res.sendResponse(result);
   },

@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
                 // required: true,
             },
             admin_status: {
-                type: DataTypes.ENUM("PENDING", "ACCEPTED","REJECTED"),
+                type: DataTypes.ENUM("PENDING", "ACCEPTED", "REJECTED"),
                 // required: true,
             },
             propertyStatus: {
@@ -143,9 +143,12 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
-            coverImage:{
-                type:DataTypes.STRING,
-                defaultValue:null
+            coverImage: {
+                type: DataTypes.STRING,
+                defaultValue: null
+            },
+            promoteAs: {
+                type: DataTypes.ENUM("FEATURED", "TRENDING", "NORMAL")
             }
 
         },

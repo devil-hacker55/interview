@@ -284,7 +284,7 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType,propertyStatus) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus,promoteAs) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us", userId)
     let result = await db.properties.findAndCountAll({
@@ -294,7 +294,10 @@ module.exports = {
         ...(admin_status && { admin_status: admin_status }),
 
         ...(roomType && { roomType: roomType }),
+        
         ...(propertyStatus && { propertyStatus: propertyStatus }),
+
+        ...(promoteAs && { promoteAs: promoteAs }),
 
         ...(search && {
           [Op.or]: {
@@ -401,7 +404,13 @@ module.exports = {
     return addr
   },
   changeStatusOfProperty: async (reqObj) => {
+    module.exports.getPropertyById(reqObj.propertyId)
     let property = await db.properties.update({ admin_status: reqObj.admin_status }, { where: { id: reqObj.propertyId } });
+    return property;
+  },
+  changeStatusOfPromoteAs: async (reqObj) => {
+    module.exports.getPropertyById(reqObj.propertyId)
+    let property = await db.properties.update({ promoteAs: reqObj.promoteAs }, { where: { id: reqObj.propertyId } });
     return property;
   },
   // dashboardCount1: async (userId) => {
