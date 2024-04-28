@@ -262,7 +262,7 @@ module.exports = {
       where: {
         email: email,
         userType: {
-          [Op.or]: [userTypes.CLIENT,userTypes.SUPERADMIN],
+          [Op.or]: [userTypes.CLIENT, userTypes.SUPERADMIN],
         },
       },
     });
@@ -284,7 +284,7 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType,propertyStatus) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us", userId)
     let result = await db.properties.findAndCountAll({
@@ -294,6 +294,7 @@ module.exports = {
         ...(admin_status && { admin_status: admin_status }),
 
         ...(roomType && { roomType: roomType }),
+        ...(propertyStatus && { propertyStatus: propertyStatus }),
 
         ...(search && {
           [Op.or]: {
@@ -348,27 +349,29 @@ module.exports = {
         "coverImage",
         "createdAt"
       ],
-      include: [{
-        model: db.useraddresses,
-        where: {
-          ...(city && { city: city }),
+      include: [
+        {
+          model: db.useraddresses,
+          where: {
+            ...(city && { city: city }),
+          },
         },
-      },
-      {
-        model: db.property_images,
-        required: false,
-      },
-      {
-        model: db.categories,
-
-        where: {
-          ...(category && {
-            category: {
-              [Op.like]: `%${category}%`,
-            },
-          }),
+        {
+          model: db.property_images,
+          required: false,
         },
-      }],
+        {
+          model: db.categories,
+          required: false,
+          where: {
+            ...(category && {
+              category: {
+                [Op.like]: `%${category}%`,
+              },
+            }),
+          },
+        }
+      ],
       distinct: true,
       order: [["createdAt", "desc"]],
 
@@ -376,8 +379,8 @@ module.exports = {
       offset,
     });
 
-    if (result.rows.length <= 0)
-      throw new createHttpError.NotFound("No properties found");
+    // if (result.rows.length <= 0)
+    //   throw new createHttpError.NotFound("No properties found");
     const response = getPagingData(result, page, limit);
     return response;
   },

@@ -466,15 +466,17 @@ module.exports = {
       req.query.admin_status,
       req.query.city,
       req.query.category,
-      req.query.roomType
+      req.query.roomType,
+      req.query.propertyStatus
     );
     if (result.totalrows <= 0) {
-      throw new createHttpError.NotFound("No properties found");
+      res.sendResponse(result);
+      //throw new createHttpError.NotFound("No properties found");
     } else {
       for (const e of result.pageData) {
         e.coverImage = e.coverImage ? await getUrl(e.coverImage) : e.coverImage;
       }
-      console.log("PP",result.pageData)
+      //console.log("PP",result.pageData)
 
       // for (let index = 0; index < array.length; index++) {
       //   const element = array[index];
