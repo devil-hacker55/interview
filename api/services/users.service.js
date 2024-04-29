@@ -318,6 +318,7 @@ module.exports = {
         "admin_status",
         "propertyStatus",
         "propertyType",
+        "promoteAs",
         "roomType",
         "no_of_balconies",
         "No_of_bathrooms",
