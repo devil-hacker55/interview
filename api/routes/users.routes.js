@@ -54,14 +54,14 @@ router.post(
 
 router.post(
   "/addProperty/:userId",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.addProperty)
 );
 
 router.get(
   "/getAllCategory",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllCategory)
 );
@@ -74,21 +74,21 @@ router.get(
 );
 router.put(
   "/changeStatusOfProperty",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN]),
   //salesInvoicesValidate.changeStatusOfProperty,
   PromiseHandler(userController.changeStatusOfProperty)
 );
 
 router.put(
   "/changeStatusOfPromoteAs",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN]),
   //salesInvoicesValidate.changeStatusOfProperty,
   PromiseHandler(userController.changeStatusOfPromoteAs)
 );
 
 router.get(
   "/dashboardCount",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.dashboardCount)
 );
@@ -101,14 +101,14 @@ router.post(
 
 router.post(
   "/contactProperty/:userId",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.contactProperty)
 );
 
 router.get(
   "/getAllPropertyVisits/:userId",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllPropertyVisits)
 );
@@ -121,15 +121,54 @@ router.get(
 
 router.post(
   "/likeProperty/:userId",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.likeProperty)
 );
 
 router.get(
   "/getUserLikedProperties/:userId",
-  authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getUserLikedProperties)
+);
+
+router.post(
+  "/addInsight/:userId",
+  authorizeNew([userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.addInsight)
+);
+
+router.get(
+  "/getAllInsight/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllInsight)
+);
+router.get(
+  "/getInsightById/:insightId",
+  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getInsightById)
+);
+
+router.get(
+  "/admin/getAllPropertiesVisited/:userId",
+  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllPropertiesVisited)
+);
+router.get(
+  "/admin/whoVisitedProperty/:propertyId",
+  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.whoVisitedProperty)
+);
+router.post(
+  "/admin/changeVisitStatus/:visitId",
+  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.changeVisitStatus)
 );
 module.exports = router;

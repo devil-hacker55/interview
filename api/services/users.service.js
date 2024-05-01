@@ -284,7 +284,7 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus,promoteAs) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us", userId)
     let result = await db.properties.findAndCountAll({
@@ -294,7 +294,7 @@ module.exports = {
         ...(admin_status && { admin_status: admin_status }),
 
         ...(roomType && { roomType: roomType }),
-        
+
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
         ...(promoteAs && { promoteAs: promoteAs }),
@@ -473,6 +473,7 @@ module.exports = {
         userId: userId,
         propertyId: propertyId,
         count: 1,
+        status: "PENDING",
         contactedAt: new Date() // Current timestamp
       });
 
@@ -557,5 +558,125 @@ module.exports = {
     })
     return data;
 
+  },
+  addInsight: async (user, reqObj) => {
+
+    let result = await user.createInsight(reqObj)
+    return result;
+
+  },
+  getAllInsight: async (page, size) => {
+    const { limit, offset } = getPagination(page, size);
+    let result = await db.insights.findAndCountAll({
+      // include: {
+      //   model: db.users
+      // },
+      distinct: true,
+      order: [["createdAt", "desc"]],
+      limit,
+      offset,
+    });
+
+    if (result.rows.length <= 0)
+      throw new createHttpError.NotFound("No properties found");
+    const response = getPagingData(result, page, limit);
+    return response;
+  },
+  getInsightById: async (id) => {
+    let user = await db.insights.findOne({
+      where: {
+        id: id,
+      },
+      attributes: ["id", "description", "title", "image", "createdAt"],
+      include: {
+        model: db.users,
+        attributes: ["firstName", "userType"],
+        required: false,
+      },
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  getAllPropertiesVisited: async (id) => {
+    let user = await db.property_visits.findAll({
+      group: ["propertyId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "propertyId"],
+      include: {
+        model: db.properties,
+        attributes: ["id", "propertyName"],
+      }
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  whoVisitedProperty1: async (propertyId) => {
+    let user = await db.property_visits.findAll({
+      where: {
+        propertyId: propertyId,
+      },
+      group: ["userId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "count", "propertyId", "contactedAt", "userId"],
+      include: [{
+        model: db.users,
+        attributes: ["id", "firstName", "mobile", "email"],
+      }, {
+        model: db.properties,
+        attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+        include: {
+          model: db.useraddresses,
+          attributes: ["id", "address", "pincode", "city"],
+        }
+      }]
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  whoVisitedProperty: async (propertyId) => {
+    let user = await db.property_visits.findAll({
+      where: {
+        propertyId: propertyId,
+      },
+      //group: ["userId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "count", "contactedAt", "userId", "status"],
+      include: [{
+        model: db.users,
+        attributes: ["id", "firstName", "mobile", "email"],
+      }]
+    });
+    let data = await db.properties.findOne({
+      where: {
+        id: propertyId
+      },
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      include: {
+        model: db.useraddresses,
+        attributes: ["id", "address", "pincode", "city"],
+      }
+    })
+    if (!user) throw new createHttpError.NotFound("visits not found");
+    return {
+      userData: user,
+      PropertyData: data
+    };
+  },
+  changeVisitStatus: async (body, visitId) => {
+    if (body.key === "LEAD") {
+      console.log("leads", visitId);
+      let data = await db.property_visits.findOne({
+        where: {
+          id: visitId,
+        }
+      });
+      if (!data) throw new createHttpError.NotFound("visits not found");
+      await data.update({
+        status: body.status
+      });
+      await data.save();
+      return data;
+    }
+    return data;
   },
 };

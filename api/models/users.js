@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       users.hasMany(models.properties, { onDelete: "CASCADE" });
       users.hasMany(models.property_visits, { onDelete: "CASCADE" });
       users.hasMany(models.likes, { onDelete: "CASCADE" });
+      users.hasMany(models.insights, { onDelete: "CASCADE" });
 
       // users.hasMany(models.employees, { foreignKey: "parentId", targetKey: "id", as: "childemployees" })
       // users.hasMany(models.users, {

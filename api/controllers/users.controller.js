@@ -25,6 +25,7 @@ const {
   generateJwtToken,
   generateRefreshToken,
 } = require("../helpers/token");
+const { query } = require("express");
 module.exports = {
   // client registeration function
   clientRegister: async (req, res, next) => {
@@ -583,6 +584,59 @@ module.exports = {
     let userId = req.params.userId
     let user = await userService.getUserById(userId)
     let result = await userService.getUserLikedProperties(user);
+    res.sendResponse(result);
+  },
+  addInsight: async (req, res, next) => {
+    let userId = req.params.userId
+    let user = await userService.getUserById(userId)
+    let result = await userService.addInsight(user, req.body);
+    res.sendResponse(result);
+  },
+  getAllInsight: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let result = await userService.getAllInsight(
+      req.query.page,
+      req.query.size
+    );
+    if (result.totalrows <= 0) {
+      res.sendResponse(result);
+    } else {
+      for (const e of result.pageData) {
+        e.image = e.image ? await getUrl(e.image) : e.image;
+      }
+    }
+    res.sendResponse(result);
+  },
+  getInsightById: async (req, res, next) => {
+    let result = await userService.getInsightById(req.params.insightId)
+    result.image = result.image
+      ? await getUrl(result.image)
+      : null;
+
+    // for (let index = 0; index < result.property_images.length; index++) {
+    //   const el = result.property_images[index];
+    //   el.productImage = el.productImage ? await getUrl(el.productImage) : null;
+    //   result.property_images[index] = el;
+    // }
+    res.sendResponse(result);
+  },
+  getAllPropertiesVisited: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    console.log("ff>>>",req.query.page,req.query.size)
+    let result = await userService.getAllPropertiesVisited(req.query.page,req.query.size)
+    res.sendResponse(result);
+  },
+  whoVisitedProperty: async (req, res, next) => {
+    let result = await userService.whoVisitedProperty(req.params.propertyId)
+    result.PropertyData.coverImage = result.PropertyData.coverImage
+      ? await getUrl(result.PropertyData.coverImage)
+      : null;
+
+    res.sendResponse(result);
+  },
+  changeVisitStatus: async (req, res, next) => {
+    //await userService.getUserById(req.params.userId);
+    let result = await userService.changeVisitStatus(req.body,req.params.visitId)
     res.sendResponse(result);
   },
 };
