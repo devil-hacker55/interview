@@ -659,7 +659,7 @@ module.exports = {
     if (!user) throw new createHttpError.NotFound("visits not found");
     return {
       userData: user,
-      PropertyData: data
+      propertyData: data
     };
   },
   changeVisitStatus: async (body, visitId) => {
