@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             properties.hasMany(models.property_images);
             properties.hasMany(models.property_visits);
             properties.hasMany(models.likes);
+            properties.hasMany(models.bookmeets);
             // properties.hasMany(models.properties, {
             //     foreignKey: "parentId",
             //     targetKey: "id",

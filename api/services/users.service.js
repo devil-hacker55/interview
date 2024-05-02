@@ -676,7 +676,154 @@ module.exports = {
       });
       await data.save();
       return data;
+    }else if(body.key=== "ZOOM"){
+      let data = await db.bookmeets.findOne({
+        where: {
+          purpose:"ZOOM",
+          id: visitId,
+        }
+      });
+      if (!data) throw new createHttpError.NotFound("booking not found");
+      await data.update({
+        status: body.status
+      });
+      await data.save();
+      return data;
+    }else if(body.key=== "CAB"){
+      let data = await db.bookmeets.findOne({
+        where: {
+          purpose:"CAB",
+          id: visitId,
+        }
+      });
+      if (!data) throw new createHttpError.NotFound("Cab booking request not found");
+      await data.update({
+        status: body.status
+      });
+      await data.save();
+      return data;
     }
     return data;
+  },
+  bookCabZoom: async (body, user) => {
+    body.status= "PENDING";
+    let property = await module.exports.getPropertyById(body.propertyId)
+    if(property.propertyStatus!="UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")
+    console.log(property.propertyStatus)
+    let data = await user.createBookmeet(body)
+    return data;
+  },
+  getAllCabBookingRequests: async (id) => {
+    let user = await db.bookmeets.findAll({
+      group: ["propertyId"],
+      order: [["createdAt", "DESC"]],
+      where:{
+        purpose:"CAB"
+      },
+      attributes: ["id", "propertyId"],
+      include: {
+        model: db.properties,
+        attributes: ["id", "propertyName"],
+      }
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  cabBookingUsers: async (propertyId) => {
+    let user = await db.bookmeets.findAll({
+      where: {
+        purpose:"CAB",
+        propertyId: propertyId,
+      },
+      //group: ["userId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id","purpose","userId", "status"],
+      include: [{
+        model: db.users,
+        attributes: ["id", "firstName", "mobile", "email"],
+      }]
+    });
+    let data = await db.properties.findOne({
+      where: {
+        id: propertyId
+      },
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      include: {
+        model: db.useraddresses,
+        attributes: ["id", "address", "pincode", "city"],
+      }
+    })
+    if (!user) throw new createHttpError.NotFound("cab booking not found");
+    return {
+      userData: user,
+      propertyData: data
+    };
+  },
+  getAllZoomBookingRequests: async (id) => {
+    let user = await db.bookmeets.findAll({
+      group: ["propertyId"],
+      order: [["createdAt", "DESC"]],
+      where:{
+        purpose:"ZOOM"
+      },
+      attributes: ["id", "propertyId"],
+      include: {
+        model: db.properties,
+        attributes: ["id", "propertyName"],
+      }
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  zoomBookingUsers: async (propertyId) => {
+    let user = await db.bookmeets.findAll({
+      where: {
+        purpose:"ZOOM",
+        propertyId: propertyId,
+      },
+      //group: ["userId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id","purpose","userId", "status"],
+      include: [{
+        model: db.users,
+        attributes: ["id", "firstName", "mobile", "email"],
+      }]
+    });
+    let data = await db.properties.findOne({
+      where: {
+        id: propertyId
+      },
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      include: {
+        model: db.useraddresses,
+        attributes: ["id", "address", "pincode", "city"],
+      }
+    })
+    if (!user) throw new createHttpError.NotFound("cab booking not found");
+    return {
+      userData: user,
+      propertyData: data
+    };
+  },
+  yt: async (body, user) => {
+    let data = await user.createYoutube(body)
+    return data;
+  },
+  getAllYt: async (page, size) => {
+    const { limit, offset } = getPagination(page, size);
+    let result = await db.youtubes.findAndCountAll({
+      // include: {
+      //   model: db.users
+      // },
+      distinct: true,
+      order: [["createdAt", "desc"]],
+      limit,
+      offset,
+    });
+
+    if (result.rows.length <= 0)
+      throw new createHttpError.NotFound("No youtube links found");
+    const response = getPagingData(result, page, limit);
+    return response;
   },
 };

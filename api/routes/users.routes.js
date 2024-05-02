@@ -148,27 +148,73 @@ router.get(
 );
 router.get(
   "/getInsightById/:insightId",
-  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getInsightById)
 );
 
 router.get(
   "/admin/getAllPropertiesVisited/:userId",
-  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllPropertiesVisited)
 );
 router.get(
   "/admin/whoVisitedProperty/:propertyId",
-  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.whoVisitedProperty)
 );
 router.post(
   "/admin/changeVisitStatus/:visitId",
-  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.changeVisitStatus)
+);
+
+router.post(
+  "/bookCabZoom/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.bookCabZoom)
+);
+
+router.get(
+  "/admin/getAllCabBookingRequests/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllCabBookingRequests)
+);
+router.get(
+  "/admin/cabBookingUsers/:propertyId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.cabBookingUsers)
+);
+
+router.get(
+  "/admin/getAllZoomBookingRequests/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllZoomBookingRequests)
+);
+router.get(
+  "/admin/zoomBookingUsers/:propertyId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.zoomBookingUsers)
+);
+
+router.post(
+  "/admin/yt/:userId",
+  authorizeNew([ userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.yt)
+);
+router.get(
+  "/admin/getAllYt/:userId",
+  authorizeNew([ userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllYt)
 );
 module.exports = router;

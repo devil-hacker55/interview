@@ -639,4 +639,56 @@ module.exports = {
     let result = await userService.changeVisitStatus(req.body,req.params.visitId)
     res.sendResponse(result);
   },
+  bookCabZoom: async (req, res, next) => {
+    let user =await userService.getUserById(req.params.userId);
+    let result = await userService.bookCabZoom(req.body,user)
+    res.sendResponse(result);
+  },
+  getAllCabBookingRequests: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    console.log("ff>>>",req.query.page,req.query.size)
+    let result = await userService.getAllCabBookingRequests(req.query.page,req.query.size)
+    res.sendResponse(result);
+  },
+  cabBookingUsers: async (req, res, next) => {
+    let result = await userService.cabBookingUsers(req.params.propertyId)
+    result.propertyData.coverImage = result.propertyData.coverImage
+      ? await getUrl(result.propertyData.coverImage)
+      : null;
+
+    res.sendResponse(result);
+  },
+  getAllZoomBookingRequests: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    console.log("ff>>>",req.query.page,req.query.size)
+    let result = await userService.getAllZoomBookingRequests(req.query.page,req.query.size)
+    res.sendResponse(result);
+  },
+  zoomBookingUsers: async (req, res, next) => {
+    let result = await userService.zoomBookingUsers(req.params.propertyId)
+    result.propertyData.coverImage = result.propertyData.coverImage
+      ? await getUrl(result.propertyData.coverImage)
+      : null;
+
+    res.sendResponse(result);
+  },
+  yt: async (req, res, next) => {
+    let user =await userService.getUserById(req.params.userId);
+    let result = await userService.yt(req.body,user)
+    res.sendResponse(result);
+  },
+  getAllYt: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let result = await userService.getAllYt(req.query.page,req.query.size)
+    // result.image = result.image
+    //   ? await getUrl(result.image)
+    //   : null;
+
+    // for (let index = 0; index < result.property_images.length; index++) {
+    //   const el = result.property_images[index];
+    //   el.productImage = el.productImage ? await getUrl(el.productImage) : null;
+    //   result.property_images[index] = el;
+    // }
+    res.sendResponse(result);
+  },
 };

@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: true,
         },
         status: {
-            type: DataTypes.ENUM("PENDING", "DONE")
+            type: DataTypes.ENUM("PENDING", "REJECTED", "DONE")
         },
         count: {
             type: DataTypes.INTEGER
