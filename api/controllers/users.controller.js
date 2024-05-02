@@ -628,8 +628,8 @@ module.exports = {
   },
   whoVisitedProperty: async (req, res, next) => {
     let result = await userService.whoVisitedProperty(req.params.propertyId)
-    result.PropertyData.coverImage = result.PropertyData.coverImage
-      ? await getUrl(result.PropertyData.coverImage)
+    result.propertyData.coverImage = result.propertyData.coverImage
+      ? await getUrl(result.propertyData.coverImage)
       : null;
 
     res.sendResponse(result);
