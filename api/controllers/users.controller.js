@@ -564,7 +564,9 @@ module.exports = {
     result.coverImage = result.coverImage
       ? await getUrl(result.coverImage)
       : null;
-
+    result.floor_plan = result.floor_plan
+      ? await getUrl(result.floor_plan)
+      : null;
     for (let index = 0; index < result.property_images.length; index++) {
       const el = result.property_images[index];
       el.productImage = el.productImage ? await getUrl(el.productImage) : null;
@@ -622,8 +624,8 @@ module.exports = {
   },
   getAllPropertiesVisited: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    console.log("ff>>>",req.query.page,req.query.size)
-    let result = await userService.getAllPropertiesVisited(req.query.page,req.query.size)
+    console.log("ff>>>", req.query.page, req.query.size)
+    let result = await userService.getAllPropertiesVisited(req.query.page, req.query.size)
     res.sendResponse(result);
   },
   whoVisitedProperty: async (req, res, next) => {
@@ -636,18 +638,18 @@ module.exports = {
   },
   changeVisitStatus: async (req, res, next) => {
     //await userService.getUserById(req.params.userId);
-    let result = await userService.changeVisitStatus(req.body,req.params.visitId)
+    let result = await userService.changeVisitStatus(req.body, req.params.visitId)
     res.sendResponse(result);
   },
   bookCabZoom: async (req, res, next) => {
-    let user =await userService.getUserById(req.params.userId);
-    let result = await userService.bookCabZoom(req.body,user)
+    let user = await userService.getUserById(req.params.userId);
+    let result = await userService.bookCabZoom(req.body, user)
     res.sendResponse(result);
   },
   getAllCabBookingRequests: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    console.log("ff>>>",req.query.page,req.query.size)
-    let result = await userService.getAllCabBookingRequests(req.query.page,req.query.size)
+    console.log("ff>>>", req.query.page, req.query.size)
+    let result = await userService.getAllCabBookingRequests(req.query.page, req.query.size)
     res.sendResponse(result);
   },
   cabBookingUsers: async (req, res, next) => {
@@ -660,8 +662,8 @@ module.exports = {
   },
   getAllZoomBookingRequests: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    console.log("ff>>>",req.query.page,req.query.size)
-    let result = await userService.getAllZoomBookingRequests(req.query.page,req.query.size)
+    console.log("ff>>>", req.query.page, req.query.size)
+    let result = await userService.getAllZoomBookingRequests(req.query.page, req.query.size)
     res.sendResponse(result);
   },
   zoomBookingUsers: async (req, res, next) => {
@@ -673,13 +675,13 @@ module.exports = {
     res.sendResponse(result);
   },
   yt: async (req, res, next) => {
-    let user =await userService.getUserById(req.params.userId);
-    let result = await userService.yt(req.body,user)
+    let user = await userService.getUserById(req.params.userId);
+    let result = await userService.yt(req.body, user)
     res.sendResponse(result);
   },
   getAllYt: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    let result = await userService.getAllYt(req.query.page,req.query.size)
+    let result = await userService.getAllYt(req.query.page, req.query.size)
     // result.image = result.image
     //   ? await getUrl(result.image)
     //   : null;

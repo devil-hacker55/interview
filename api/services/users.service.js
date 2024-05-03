@@ -676,10 +676,10 @@ module.exports = {
       });
       await data.save();
       return data;
-    }else if(body.key=== "ZOOM"){
+    } else if (body.key === "ZOOM") {
       let data = await db.bookmeets.findOne({
         where: {
-          purpose:"ZOOM",
+          purpose: "ZOOM",
           id: visitId,
         }
       });
@@ -689,10 +689,10 @@ module.exports = {
       });
       await data.save();
       return data;
-    }else if(body.key=== "CAB"){
+    } else if (body.key === "CAB") {
       let data = await db.bookmeets.findOne({
         where: {
-          purpose:"CAB",
+          purpose: "CAB",
           id: visitId,
         }
       });
@@ -706,10 +706,21 @@ module.exports = {
     return data;
   },
   bookCabZoom: async (body, user) => {
-    body.status= "PENDING";
+    body.status = "PENDING";
+    let alreadyBooked = await db.bookmeets.findOne({
+      where: {
+        propertyId: body.propertyId,
+        userId: user.id,
+        purpose: body.purpose,
+        status:"PENDING"
+      }
+    })
+    if (alreadyBooked) throw new createHttpError.Conflict("You already have booked,please wait for our team to revert back.")
+
     let property = await module.exports.getPropertyById(body.propertyId)
-    if(property.propertyStatus!="UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")
+    if (property.propertyStatus != "UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")
     console.log(property.propertyStatus)
+
     let data = await user.createBookmeet(body)
     return data;
   },
@@ -717,8 +728,8 @@ module.exports = {
     let user = await db.bookmeets.findAll({
       group: ["propertyId"],
       order: [["createdAt", "DESC"]],
-      where:{
-        purpose:"CAB"
+      where: {
+        purpose: "CAB"
       },
       attributes: ["id", "propertyId"],
       include: {
@@ -732,12 +743,12 @@ module.exports = {
   cabBookingUsers: async (propertyId) => {
     let user = await db.bookmeets.findAll({
       where: {
-        purpose:"CAB",
+        purpose: "CAB",
         propertyId: propertyId,
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id","purpose","userId", "status"],
+      attributes: ["id", "purpose", "userId", "status"],
       include: [{
         model: db.users,
         attributes: ["id", "firstName", "mobile", "email"],
@@ -763,8 +774,8 @@ module.exports = {
     let user = await db.bookmeets.findAll({
       group: ["propertyId"],
       order: [["createdAt", "DESC"]],
-      where:{
-        purpose:"ZOOM"
+      where: {
+        purpose: "ZOOM"
       },
       attributes: ["id", "propertyId"],
       include: {
@@ -778,12 +789,12 @@ module.exports = {
   zoomBookingUsers: async (propertyId) => {
     let user = await db.bookmeets.findAll({
       where: {
-        purpose:"ZOOM",
+        purpose: "ZOOM",
         propertyId: propertyId,
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id","purpose","userId", "status"],
+      attributes: ["id", "purpose", "userId", "status"],
       include: [{
         model: db.users,
         attributes: ["id", "firstName", "mobile", "email"],
