@@ -561,7 +561,7 @@ module.exports = {
     if (!isCreated) {
       result.destroy(result)
       // result.save()
-      throw new createHttpError.Conflict("unliked successfully")
+      return { msg: "unliked successfully" }
     }
     return result;
 
