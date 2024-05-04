@@ -374,6 +374,12 @@ module.exports = {
               },
             }),
           },
+        },
+        {
+          model: db.likes,
+          required: false,
+          where: { userId: userId }, // Filter likes by current user
+          attributes: ['createdAt'], // Exclude all columns except the count
         }
       ],
       distinct: true,
@@ -385,7 +391,12 @@ module.exports = {
 
     // if (result.rows.length <= 0)
     //   throw new createHttpError.NotFound("No properties found");
-    const response = getPagingData(result, page, limit);
+    const propertiesWithLikes = result.rows.map(property => {
+      const isLiked = property.likes.length > 0; // If the likes array is not empty, the property is liked by the user
+      return { ...property.toJSON(), isLiked };
+    });
+
+    const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
   getAllCategory: async (search) => {
@@ -552,8 +563,16 @@ module.exports = {
   },
   getUserLikedProperties: async (user) => {
     let data = await user.getLikes({
+      attributes: ["id"],
       include: {
-        model: db.properties
+        model: db.properties,
+        include: {
+          model: db.useraddresses,
+          attributes:['address']
+          // where: {
+          //   ...(city && { city: city }),
+          // },
+        },
       }
     })
     return data;
@@ -712,7 +731,7 @@ module.exports = {
         propertyId: body.propertyId,
         userId: user.id,
         purpose: body.purpose,
-        status:"PENDING"
+        status: "PENDING"
       }
     })
     if (alreadyBooked) throw new createHttpError.Conflict("You already have booked,please wait for our team to revert back.")
