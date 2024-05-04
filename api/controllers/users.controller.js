@@ -595,7 +595,7 @@ module.exports = {
     res.sendResponse(result);
   },
   getAllInsight: async (req, res, next) => {
-    await userService.getUserById(req.params.userId);
+    //await userService.getUserById(req.params.userId);
     let result = await userService.getAllInsight(
       req.query.page,
       req.query.size
@@ -680,7 +680,7 @@ module.exports = {
     res.sendResponse(result);
   },
   getAllYt: async (req, res, next) => {
-    await userService.getUserById(req.params.userId);
+    //await userService.getUserById(req.params.userId);
     let result = await userService.getAllYt(req.query.page, req.query.size)
     // result.image = result.image
     //   ? await getUrl(result.image)

@@ -286,10 +286,10 @@ module.exports = {
   },
   getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs) => {
     const { limit, offset } = getPagination(page, size);
-    console.log("us", userId)
+    console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
       where: {
-        ...(userId && { userId: userId }),
+        //...(userId && { userId: userId }),
 
         ...(admin_status && { admin_status: admin_status }),
 
@@ -378,7 +378,7 @@ module.exports = {
         {
           model: db.likes,
           required: false,
-          where: { userId: userId }, // Filter likes by current user
+          where: userId ? { userId: userId } : {}, // Filter likes by current user
           attributes: ['createdAt'], // Exclude all columns except the count
         }
       ],
@@ -392,7 +392,12 @@ module.exports = {
     // if (result.rows.length <= 0)
     //   throw new createHttpError.NotFound("No properties found");
     const propertiesWithLikes = result.rows.map(property => {
-      const isLiked = property.likes.length > 0; // If the likes array is not empty, the property is liked by the user
+      let isLiked = false; // Set isLiked to false by default
+      if (userId) {
+        console.log("INNNNNNN")
+        // If userId is provided, check if the property has any likes by the user
+        isLiked = property.likes.length > 0;
+      }
       return { ...property.toJSON(), isLiked };
     });
 
@@ -568,7 +573,7 @@ module.exports = {
         model: db.properties,
         include: {
           model: db.useraddresses,
-          attributes:['address']
+          attributes: ['address']
           // where: {
           //   ...(city && { city: city }),
           // },

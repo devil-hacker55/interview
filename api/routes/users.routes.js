@@ -141,7 +141,7 @@ router.post(
 );
 
 router.get(
-  "/getAllInsight/:userId",
+  "/getAllInsight",
   authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllInsight)
@@ -212,8 +212,8 @@ router.post(
   PromiseHandler(userController.yt)
 );
 router.get(
-  "/admin/getAllYt/:userId",
-  authorizeNew([ userTypes.SUPERADMIN]),
+  "/admin/getAllYt",
+  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllYt)
 );
