@@ -142,13 +142,13 @@ router.post(
 
 router.get(
   "/getAllInsight",
-  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllInsight)
 );
 router.get(
   "/getInsightById/:insightId",
-  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getInsightById)
 );
@@ -213,7 +213,7 @@ router.post(
 );
 router.get(
   "/admin/getAllYt",
-  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllYt)
 );
