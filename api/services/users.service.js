@@ -606,7 +606,7 @@ module.exports = {
     });
 
     if (result.rows.length <= 0)
-      throw new createHttpError.NotFound("No insites found");
+      throw new createHttpError.NotFound("No insights found");
     const response = getPagingData(result, page, limit);
     return response;
   },
