@@ -680,7 +680,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",        "rentPrice",
+      "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],
@@ -788,7 +789,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",     "rentPrice",
+      "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],
@@ -834,7 +836,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price"],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",        "rentPrice",
+      "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],
