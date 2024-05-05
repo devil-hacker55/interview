@@ -586,6 +586,14 @@ module.exports = {
     let userId = req.params.userId
     let user = await userService.getUserById(userId)
     let result = await userService.getUserLikedProperties(user);
+    if (result.totalrows <= 0) {
+      res.sendResponse(result);
+      //throw new createHttpError.NotFound("No properties found");
+    } else {
+      for (const e of result) {
+        e.property.coverImage = e.property.coverImage ? await getUrl(e.property.coverImage) : e.property.coverImage;
+      }
+    }
     res.sendResponse(result);
   },
   addInsight: async (req, res, next) => {
