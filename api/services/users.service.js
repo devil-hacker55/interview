@@ -383,8 +383,12 @@ module.exports = {
         }
       ],
       distinct: true,
-      order: [["createdAt", "desc"]],
-
+      //order: [["createdAt", "desc"]],
+      order: [
+        // First, sort by promoteAs="TRENDING"
+        [db.sequelize.literal('promoteAs = "TRENDING"'), 'DESC'], // This will push "TRENDING" properties to the top
+        ['createdAt', 'desc'] // Then, sort by createdAt in descending order
+      ],
       limit,
       offset,
     });
