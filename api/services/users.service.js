@@ -484,7 +484,7 @@ module.exports = {
     if (existingVisit) {
       // If an existing visit record is found, update the visitedAt timestamp
       let countValue = existingVisit.count
-      await existingVisit.update({ contactedAt: new Date(), count: countValue + 1 });
+      await existingVisit.update({ contactedAt: new Date(), count: countValue + 1, status: "PENDING" });
 
       console.log(`Property visit updated: Client ${userId}, Property ${propertyId}`);
     } else {
@@ -606,7 +606,7 @@ module.exports = {
     });
 
     if (result.rows.length <= 0)
-      throw new createHttpError.NotFound("No properties found");
+      throw new createHttpError.NotFound("No insites found");
     const response = getPagingData(result, page, limit);
     return response;
   },
