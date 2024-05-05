@@ -66,6 +66,8 @@ module.exports = (sequelize, DataTypes) => {
             no_of_balconies: DataTypes.STRING,
             No_of_bathrooms: DataTypes.STRING,
             additional_rooms: DataTypes.STRING,
+            rentPrice:DataTypes.DOUBLE,
+            depositAmount:DataTypes.DOUBLE,
             facing: {
                 type: DataTypes.ENUM("WEST", "EAST", "NORTH"),
                 // required: true,

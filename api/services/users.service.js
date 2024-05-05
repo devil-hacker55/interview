@@ -320,6 +320,8 @@ module.exports = {
         "propertyType",
         "promoteAs",
         "roomType",
+        "rentPrice",
+        "depositAmount",
         "no_of_balconies",
         "No_of_bathrooms",
         "additional_rooms",
