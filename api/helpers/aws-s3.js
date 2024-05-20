@@ -54,7 +54,7 @@ const imageUpload = multer({
     contentType: multerS3.AUTO_CONTENT_TYPE,
   }),
   limits: {
-    fileSize: 1024 * 1024 * 10, 
+    fileSize: 1024 * 1024 * 3, 
   },
   fileFilter: function (req, file, cb) {
     console.log("file filter>>>>>>>>>>", file);

@@ -480,6 +480,14 @@ module.exports = {
       where: {
         userId: userId,
         propertyId: propertyId
+      },
+      include: {
+        model: db.properties,
+        attributes:["propertyName"],
+        include: {
+          model: db.users,
+          attributes:["firstName","mobile"],
+        }
       }
     });
     console.log(existingVisit)
@@ -499,7 +507,7 @@ module.exports = {
         contactedAt: new Date() // Current timestamp
       });
 
-      return true
+      return existingVisit
     }
   },
   getAllPropertyVisits: async (userId, page, size,) => {
@@ -680,8 +688,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",        "rentPrice",
-      "depositAmount",],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price", "rentPrice",
+        "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],
@@ -789,8 +797,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",     "rentPrice",
-      "depositAmount",],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price", "rentPrice",
+        "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],
@@ -836,8 +844,8 @@ module.exports = {
       where: {
         id: propertyId
       },
-      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price",        "rentPrice",
-      "depositAmount",],
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price", "rentPrice",
+        "depositAmount",],
       include: {
         model: db.useraddresses,
         attributes: ["id", "address", "pincode", "city"],

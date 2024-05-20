@@ -63,6 +63,12 @@ module.exports = (sequelize, DataTypes) => {
             roomType: {
                 type: DataTypes.ENUM("1 RK", "1 BHK", "2 BHK", "3 BHK", "3.5 BHK", "4 BHK", "4.5 BHK", "5 BHK", "5+ BHK"),
             },
+            lattitude: {
+                type: DataTypes.STRING,
+            },
+            longitutde: {
+                type: DataTypes.STRING,
+            },
             no_of_balconies: DataTypes.STRING,
             No_of_bathrooms: DataTypes.STRING,
             additional_rooms: DataTypes.STRING,
