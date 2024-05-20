@@ -483,21 +483,39 @@ module.exports = {
       },
       include: {
         model: db.properties,
-        attributes:["propertyName"],
+        required: false,
+        attributes: ["propertyName"],
         include: {
           model: db.users,
-          attributes:["firstName","mobile"],
+          required: false,
+          attributes: ["firstName", "mobile"],
         }
       }
     });
-    console.log(existingVisit)
+    console.log("existingVisit???", existingVisit);
     if (existingVisit) {
       // If an existing visit record is found, update the visitedAt timestamp
       let countValue = existingVisit.count
       await existingVisit.update({ contactedAt: new Date(), count: countValue + 1, status: "PENDING" });
 
       console.log(`Property visit updated: Client ${userId}, Property ${propertyId}`);
-    } else {
+      return {
+        message: `Property visit updated: Client ${userId}, Property ${propertyId}`,
+        ownerName: existingVisit.property.user.firstName,
+        ownerMobile: existingVisit.property.user.mobile
+      }
+    }
+    else {
+      let property = await db.properties.findOne({
+        where: {
+          id: propertyId
+        },
+        include: {
+          model: db.users,
+          required: false,
+          attributes: ["firstName", "mobile"],
+        }
+      })
       // If no existing visit record is found, create a new one
       await db.property_visits.create({
         userId: userId,
@@ -507,7 +525,11 @@ module.exports = {
         contactedAt: new Date() // Current timestamp
       });
 
-      return existingVisit
+      return {
+        message: `Property visit updated: Client ${userId}, Property ${propertyId}`,
+        ownerName: property.user.firstName,
+        ownerMobile: property.user.mobile
+      }
     }
   },
   getAllPropertyVisits: async (userId, page, size,) => {
