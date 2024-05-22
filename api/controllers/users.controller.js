@@ -26,6 +26,7 @@ const {
   generateRefreshToken,
 } = require("../helpers/token");
 const { query } = require("express");
+const { userTypes } = require("../utils/strings");
 module.exports = {
   // client registeration function
   clientRegister: async (req, res, next) => {
@@ -454,7 +455,18 @@ module.exports = {
     let userId = req.params.userId
     let user = await userService.getUserById(userId);
     addProperty.promoteAs = "NORMAL"
+    if (req.apiCallData.user.userType === userTypes.SUPERADMIN) {
+      addProperty.adminAdded = true
+    }
     await userService.addProperty(user, addProperty, propertyImages, address);
+
+    return res.sendResponse("Property added!");
+  },
+  editProperty: async (req, res, next) => {
+    let { addProperty, propertyImages, address } = req.body;
+    let propertyId = req.params.propertyId
+    //let user = await userService.getUserById(propertyId);
+    await userService.editProperty(propertyId, addProperty, propertyImages, address);
 
     return res.sendResponse("Property added!");
   },
@@ -470,7 +482,49 @@ module.exports = {
       req.query.category,
       req.query.roomType,
       req.query.propertyStatus,
-      req.query.promoteAs
+      req.query.promoteAs,
+      req.query.adminAdded
+    );
+    if (result.totalrows <= 0) {
+      res.sendResponse(result);
+      //throw new createHttpError.NotFound("No properties found");
+    } else {
+      for (const e of result.pageData) {
+        e.coverImage = e.coverImage ? await getUrl(e.coverImage) : e.coverImage;
+      }
+      //console.log("PP",result.pageData)
+
+      // for (let index = 0; index < array.length; index++) {
+      //   const element = array[index];
+
+      // }
+      for (let index = 0; index < result.pageData.length; index++) {
+        const el = result.pageData[index];
+        for (let index = 0; index < el.property_images.length; index++) {
+          const element2 = el.property_images[index];
+          element2.productImage = element2.productImage ? await getUrl(element2.productImage) : null;
+          el.property_images[index] = element2;
+        }
+
+
+      }
+    }
+    res.sendResponse(result);
+  },
+  getAllPropertyCustomer: async (req, res, next) => {
+    let result = await userService.getAllPropertyCustomer(
+      req.query.userId,
+      req.query.search,
+      req.query.page,
+      req.query.size,
+      req.query.purpose,
+      req.query.admin_status,
+      req.query.city,
+      req.query.category,
+      req.query.roomType,
+      req.query.propertyStatus,
+      req.query.promoteAs,
+      req.query.adminAdded
     );
     if (result.totalrows <= 0) {
       res.sendResponse(result);
@@ -561,11 +615,21 @@ module.exports = {
   },
   getPropertyById: async (req, res, next) => {
     let result = await userService.getPropertyById(req.params.userId)
+    console.log("RESUltra: getPropertyById", result.useraddress)
     result.coverImage = result.coverImage
       ? await getUrl(result.coverImage)
       : null;
     result.floor_plan = result.floor_plan
       ? await getUrl(result.floor_plan)
+      : null;
+    // result.map = result.map
+    //   ? await getUrl(result.map)
+    //   : null;
+    result.brochure = result.brochure
+      ? await getUrl(result.brochure)
+      : null;
+    result.useraddress.map_link = result.useraddress.map_link
+      ? await getUrl(result.useraddress.map_link)
       : null;
     for (let index = 0; index < result.property_images.length; index++) {
       const el = result.property_images[index];
@@ -653,6 +717,17 @@ module.exports = {
     let user = await userService.getUserById(req.params.userId);
     let result = await userService.bookCabZoom(req.body, user)
     res.sendResponse(result);
+  },
+  downloadBrochure: async (req, res, next) => {
+    let user = await userService.getUserById(req.params.userId);
+    let result = await userService.downloadBrochure(req.body, user)
+    console.log("result???",result.brochure)
+
+    result.brochure = result.brochure
+    ? await getUrl(result.brochure)
+    : null;
+    console.log("result???1111",result.brochure)
+    res.sendResponse(result.brochure);
   },
   getAllCabBookingRequests: async (req, res, next) => {
     await userService.getUserById(req.params.userId);

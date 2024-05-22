@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
-            property_images.belongsTo(models.properties, { onDelete: 'CASCADE' });
+            property_images.belongsTo(models.properties);
         }
     };
     property_images.init({

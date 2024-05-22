@@ -10,13 +10,13 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             //properties.hasOne(models.clients);
-            properties.hasOne(models.useraddresses);
+            properties.hasOne(models.useraddresses, { onDelete: 'CASCADE' });
 
             properties.hasMany(models.refreshTokens, { onDelete: "CASCADE" });
-            properties.hasMany(models.property_images);
-            properties.hasMany(models.property_visits);
-            properties.hasMany(models.likes);
-            properties.hasMany(models.bookmeets);
+            properties.hasMany(models.property_images, { onDelete: 'CASCADE' });
+            properties.hasMany(models.property_visits, { onDelete: 'CASCADE' });
+            properties.hasMany(models.likes, { onDelete: 'CASCADE' });
+            properties.hasMany(models.bookmeets, { onDelete: 'CASCADE' });
             // properties.hasMany(models.properties, {
             //     foreignKey: "parentId",
             //     targetKey: "id",
@@ -156,9 +156,9 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 defaultValue: null
             },
-            map: {
-                type: DataTypes.STRING,
-                defaultValue: null
+            adminAdded: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false
             },
             promoteAs: {
                 type: DataTypes.ENUM("FEATURED", "TRENDING", "NORMAL")

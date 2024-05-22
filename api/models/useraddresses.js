@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // define association here
             //M:M roles can have many permissions and permissions can have many roles
-            useraddresses.belongsTo(models.users, { onDelete: 'CASCADE' })
-            useraddresses.belongsTo(models.properties, { onDelete: 'CASCADE' })
+            useraddresses.belongsTo(models.users)
+            useraddresses.belongsTo(models.properties)
         }
     };
     useraddresses.init({

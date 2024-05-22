@@ -59,6 +59,13 @@ router.post(
   PromiseHandler(userController.addProperty)
 );
 
+router.put(
+  "/admin/editProperty/:propertyId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.editProperty)
+);
+
 router.get(
   "/getAllCategory",
   authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
@@ -71,6 +78,13 @@ router.get(
   //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllProperty)
+);
+
+router.get(
+  "/customer/getAllProperty",
+  //authorizeNew([userTypes.CLIENT,userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllPropertyCustomer)
 );
 router.put(
   "/changeStatusOfProperty",
@@ -177,6 +191,13 @@ router.post(
   authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.bookCabZoom)
+);
+
+router.post(
+  "/downloadBrochure/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.downloadBrochure)
 );
 
 router.get(

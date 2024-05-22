@@ -35,7 +35,7 @@ const {
 } = require("../utils/commonUtils");
 const { userTypes, roles } = require("../utils/strings");
 const { getUrl, deleteFile } = require("../helpers/aws-s3");
-const { getUserId } = require("../controllers/users.controller");
+const { getUserId, editProperty, downloadBrochure } = require("../controllers/users.controller");
 
 for (let model of Object.keys(db)) {
   if (models[model].name === "Sequelize") continue;
@@ -284,12 +284,46 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs) => {
+  editProperty: async (propertyId, addProperty, propertyImages, address) => {
+    let property = await module.exports.getPropertyById(propertyId);
+    //let property = await user.createProperty(addProperty);
+    if (addProperty) {
+      await property.set(addProperty)
+      await property.save();
+      await property.reload();
+    }
+    if (propertyImages.length > 0) {
+      await db.property_images.destroy({
+        where: {
+          propertyId: property.id
+        }
+      });
+      let productImagesData = propertyImages.map((image) => ({
+        propertyId: property.id,
+        productImage: image,
+      }));
+      await db.property_images.bulkCreate(productImagesData);
+      await property.reload();
+    }
+    if (address) {
+      let primaryAdd = await property.getUseraddress();
+      if (primaryAdd) {
+        await primaryAdd.set(address);
+        await primaryAdd.save();
+      } else {
+        await property.createUseraddress(address);
+      }
+    }
+    return property;
+  },
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs,adminAdded) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
       where: {
         //...(userId && { userId: userId }),
+
+        ...(adminAdded && { adminAdded:adminAdded }),
 
         ...(admin_status && { admin_status: admin_status }),
 
@@ -353,7 +387,139 @@ module.exports = {
         "power_back_up",
         "water_storage",
         "coverImage",
-        "map",
+        "adminAdded",
+        "createdAt"
+      ],
+      include: [
+        {
+          model: db.useraddresses,
+          where: {
+            ...(city && { city: city }),
+          },
+        },
+        {
+          model: db.property_images,
+          required: false,
+        },
+        {
+          model: db.categories,
+          required: false,
+          where: {
+            ...(category && {
+              category: {
+                [Op.like]: `%${category}%`,
+              },
+            }),
+          },
+        },
+        {
+          model: db.likes,
+          required: false,
+          where: userId ? { userId: userId } : {}, // Filter likes by current user
+          attributes: ['createdAt'], // Exclude all columns except the count
+        }
+      ],
+      distinct: true,
+      //order: [["createdAt", "desc"]],
+      order: [
+        // First, sort by promoteAs="TRENDING"
+        [db.sequelize.literal('promoteAs = "TRENDING"'), 'DESC'], // This will push "TRENDING" properties to the top
+        ['createdAt', 'desc'] // Then, sort by createdAt in descending order
+      ],
+      limit,
+      offset,
+    });
+
+    // if (result.rows.length <= 0)
+    //   throw new createHttpError.NotFound("No properties found");
+    const propertiesWithLikes = result.rows.map(property => {
+      let isLiked = false; // Set isLiked to false by default
+      if (userId) {
+        console.log("INNNNNNN")
+        // If userId is provided, check if the property has any likes by the user
+        isLiked = property.likes.length > 0;
+      }
+      return { ...property.toJSON(), isLiked };
+    });
+
+    const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
+    return response;
+  },
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs,adminAdded) => {
+    const { limit, offset } = getPagination(page, size);
+    console.log("us111", userId)
+    let result = await db.properties.findAndCountAll({
+      where: {
+        admin_status: {
+          [Op.ne]: "REJECTED"
+        },
+        //...(userId && { userId: userId }),
+
+        ...(adminAdded && { adminAdded:adminAdded }),
+
+        ...(admin_status && { admin_status: admin_status }),
+
+        ...(roomType && { roomType: roomType }),
+
+        ...(propertyStatus && { propertyStatus: propertyStatus }),
+
+        ...(promoteAs && { promoteAs: promoteAs }),
+
+        ...(search && {
+          [Op.or]: {
+            propertyName: {
+              [Op.like]: `%${search}%`,
+            },
+
+          },
+        }),
+
+        ...(purpose && { purpose: purpose }),
+
+      },
+      attributes: [
+        "id",
+        "propertyName",
+        "purpose",
+        "admin_status",
+        "propertyStatus",
+        "propertyType",
+        "promoteAs",
+        "roomType",
+        "rentPrice",
+        "depositAmount",
+        "no_of_balconies",
+        "No_of_bathrooms",
+        "additional_rooms",
+        "facing",
+        "ownership",
+        "floor",
+        "furnishing",
+        "parking",
+        "floor_plan",
+        "brochure",
+        "isActive",
+        "isVerified",
+        "salePrice",
+        "area",
+        "booking_amt_percentage",
+        "maintenance_price",
+        "possession",
+        "rera_number",
+        "description",
+        "isDeleted",
+        "lift",
+        "wifi",
+        "club_house",
+        "swimming_pool",
+        "reserved_parking",
+        "security",
+        "park",
+        "gym",
+        "power_back_up",
+        "water_storage",
+        "coverImage",
+        "adminAdded",
         "createdAt"
       ],
       include: [
@@ -785,6 +951,26 @@ module.exports = {
 
     let data = await user.createBookmeet(body)
     return data;
+  },
+  downloadBrochure: async (body, user) => {
+    body.status = "PENDING";
+    let alreadyBooked = await db.bookmeets.findOne({
+      where: {
+        propertyId: body.propertyId,
+        userId: user.id,
+        purpose: body.purpose,
+        status: "PENDING"
+      }
+    })
+    if (alreadyBooked) throw new createHttpError.Conflict("You already have booked,please wait for our team to revert back.")
+
+    let property = await module.exports.getPropertyById(body.propertyId)
+    if (property.propertyStatus != "UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")
+    console.log(property.propertyStatus)
+
+    let data = await user.createBookmeet(body)
+    //data.brochureLink = property.brochure
+    return property
   },
   getAllCabBookingRequests: async (id) => {
     let user = await db.bookmeets.findAll({
