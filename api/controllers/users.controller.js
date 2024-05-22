@@ -682,6 +682,20 @@ module.exports = {
 
     res.sendResponse(result);
   },
+  getAllBrochureRequests: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    console.log("ff>>>", req.query.page, req.query.size)
+    let result = await userService.getAllBrochureRequests(req.query.page, req.query.size)
+    res.sendResponse(result);
+  },
+  brochureUsers: async (req, res, next) => {
+    let result = await userService.brochureUsers(req.params.propertyId)
+    result.propertyData.coverImage = result.propertyData.coverImage
+      ? await getUrl(result.propertyData.coverImage)
+      : null;
+
+    res.sendResponse(result);
+  },
   yt: async (req, res, next) => {
     let user = await userService.getUserById(req.params.userId);
     let result = await userService.yt(req.body, user)

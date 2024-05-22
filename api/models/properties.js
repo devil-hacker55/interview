@@ -156,6 +156,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 defaultValue: null
             },
+            map: {
+                type: DataTypes.STRING,
+                defaultValue: null
+            },
             promoteAs: {
                 type: DataTypes.ENUM("FEATURED", "TRENDING", "NORMAL")
             }

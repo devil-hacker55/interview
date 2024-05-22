@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: DataTypes.UUIDV4,
             },
             purpose: {
-                type: DataTypes.ENUM("ZOOM", "CAB"),
+                type: DataTypes.ENUM("ZOOM", "CAB","BROCHURE"),
                 // required: true,
             },
             status: {

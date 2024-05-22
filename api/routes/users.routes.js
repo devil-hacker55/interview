@@ -205,6 +205,18 @@ router.get(
   PromiseHandler(userController.zoomBookingUsers)
 );
 
+router.get(
+  "/admin/getAllBrochureRequests/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllBrochureRequests)
+);
+router.get(
+  "/admin/brochureUsers/:propertyId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.brochureUsers)
+);
 router.post(
   "/admin/yt/:userId",
   authorizeNew([ userTypes.SUPERADMIN]),

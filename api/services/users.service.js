@@ -353,6 +353,7 @@ module.exports = {
         "power_back_up",
         "water_storage",
         "coverImage",
+        "map",
         "createdAt"
       ],
       include: [
@@ -874,6 +875,53 @@ module.exports = {
       }
     })
     if (!user) throw new createHttpError.NotFound("cab booking not found");
+    return {
+      userData: user,
+      propertyData: data
+    };
+  },
+  getAllBrochureRequests: async (id) => {
+    let user = await db.bookmeets.findAll({
+      group: ["propertyId"],
+      order: [["createdAt", "DESC"]],
+      where: {
+        purpose: "BROCHURE"
+      },
+      attributes: ["id", "propertyId"],
+      include: {
+        model: db.properties,
+        attributes: ["id", "propertyName"],
+      }
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
+  brochureUsers: async (propertyId) => {
+    let user = await db.bookmeets.findAll({
+      where: {
+        purpose: "BROCHURE",
+        propertyId: propertyId,
+      },
+      //group: ["userId"],
+      order: [["createdAt", "DESC"]],
+      attributes: ["id", "purpose", "userId", "status"],
+      include: [{
+        model: db.users,
+        attributes: ["id", "firstName", "mobile", "email"],
+      }]
+    });
+    let data = await db.properties.findOne({
+      where: {
+        id: propertyId
+      },
+      attributes: ["id", "propertyName", "purpose", "propertyStatus", "propertyType", "roomType", "parking", "salePrice", "area", "no_of_balconies", "No_of_bathrooms", "coverImage", "booking_amt_percentage", "maintenance_price", "rentPrice",
+        "depositAmount",],
+      include: {
+        model: db.useraddresses,
+        attributes: ["id", "address", "pincode", "city"],
+      }
+    })
+    if (!user) throw new createHttpError.NotFound("brochure not found");
     return {
       userData: user,
       propertyData: data
