@@ -230,6 +230,28 @@ module.exports = {
     if (!user) throw new createHttpError.NotFound("property not found");
     return user;
   },
+  getPropertyByIdForBrochure: async (id) => {
+    let user = await db.properties.findOne({
+      where: {
+        id: id,
+      },
+      attributes: ["brochure", "propertyStatus"]
+      // include: [{
+      //   model: db.useraddresses,
+      //   required: false,
+      // },
+      // {
+      //   model: db.property_images,
+      //   required: false,
+      // },
+      // {
+      //   model: db.categories,
+      //   required: false,
+      // }],
+    });
+    if (!user) throw new createHttpError.NotFound("property not found");
+    return user;
+  },
   verifyClientOtp: async (email, emailotp, mobileotp) => {
     let user = await module.exports.getClientByEmail(email);
     console.log(user);
@@ -316,14 +338,14 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs,adminAdded) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
       where: {
         //...(userId && { userId: userId }),
 
-        ...(adminAdded && { adminAdded:adminAdded }),
+        ...(adminAdded && { adminAdded: adminAdded }),
 
         ...(admin_status && { admin_status: admin_status }),
 
@@ -445,7 +467,7 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs,adminAdded) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
@@ -455,7 +477,7 @@ module.exports = {
         },
         //...(userId && { userId: userId }),
 
-        ...(adminAdded && { adminAdded:adminAdded }),
+        ...(adminAdded && { adminAdded: adminAdded }),
 
         ...(admin_status && { admin_status: admin_status }),
 
@@ -962,13 +984,14 @@ module.exports = {
         status: "PENDING"
       }
     })
+    console.log("lllll", alreadyBooked)
     if (alreadyBooked) throw new createHttpError.Conflict("You already have booked,please wait for our team to revert back.")
 
-    let property = await module.exports.getPropertyById(body.propertyId)
+    let property = await module.exports.getPropertyByIdForBrochure(body.propertyId)
     if (property.propertyStatus != "UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")
     console.log(property.propertyStatus)
 
-    let data = await user.createBookmeet(body)
+    await user.createBookmeet(body)
     //data.brochureLink = property.brochure
     return property
   },

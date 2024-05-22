@@ -726,8 +726,7 @@ module.exports = {
     result.brochure = result.brochure
     ? await getUrl(result.brochure)
     : null;
-    console.log("result???1111",result.brochure)
-    res.sendResponse(result.brochure);
+    res.sendResponse(result);
   },
   getAllCabBookingRequests: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
