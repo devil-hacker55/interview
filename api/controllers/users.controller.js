@@ -656,6 +656,9 @@ module.exports = {
     result.floor_plan = result.floor_plan
       ? await getUrl(result.floor_plan)
       : null;
+      result.master_plan = result.master_plan
+      ? await getUrl(result.master_plan)
+      : null;
     // result.map = result.map
     //   ? await getUrl(result.map)
     //   : null;

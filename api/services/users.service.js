@@ -340,7 +340,6 @@ module.exports = {
   },
   getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
     const { limit, offset } = getPagination(page, size);
-    console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
       where: {
         //...(userId && { userId: userId }),
@@ -387,6 +386,7 @@ module.exports = {
         "furnishing",
         "parking",
         "floor_plan",
+        "master_plan",
         "brochure",
         "isActive",
         "isVerified",
@@ -425,13 +425,9 @@ module.exports = {
         },
         {
           model: db.categories,
-          required: false,
+          //required: false,
           where: {
-            ...(category && {
-              category: {
-                [Op.like]: `%${category}%`,
-              },
-            }),
+            ...(category && {category: category}),
           },
         },
         {
@@ -519,6 +515,7 @@ module.exports = {
         "furnishing",
         "parking",
         "floor_plan",
+        "master_plan",
         "brochure",
         "isActive",
         "isVerified",

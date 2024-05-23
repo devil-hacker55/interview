@@ -92,6 +92,7 @@ module.exports = (sequelize, DataTypes) => {
                 // required: true,
             },
             floor_plan: DataTypes.STRING,
+            master_plan: DataTypes.STRING,
             brochure: DataTypes.STRING,
             isActive: {
                 type: DataTypes.BOOLEAN,
