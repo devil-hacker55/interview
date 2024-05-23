@@ -596,6 +596,21 @@ module.exports = {
       "Image Uploaded Successfully"
     );
   },
+  saveUploadImagecity: async (req, res, next) => {
+    if (!req.file || !req.file.key) {
+      throw new createHttpError.ExpectationFailed("Image file link  not found");
+    }
+    console.log("File uploaded successfully.", req.file);
+    console.log("File uploaded successfully111", req.file.key);
+    console.log(req.file);
+    await db.banklogos.create({key: req.file.key})
+    res.sendResponse(
+      {
+        location: req.file.key,
+      },
+      "Image Uploaded Successfully"
+    );
+  },
 
   contactProperty: async (req, res, next) => {
     let userId = req.params.userId
@@ -611,6 +626,25 @@ module.exports = {
       req.query.page,
       req.query.size,
     );
+    res.sendResponse(result);
+  },
+  getAllImagesLogos: async (req, res, next) => {
+    let result = await userService.getAllImagesLogos();
+    for (let index = 0; index < result.banklogos.length; index++) {
+      const el = result.banklogos[index];
+      el.key = el.key ? await getUrl(el.key) : null;
+      result.banklogos[index] = el;
+    }
+    for (let index = 0; index < result.propertylogos.length; index++) {
+      const el = result.propertylogos[index];
+      el.key = el.key ? await getUrl(el.key) : null;
+      result.propertylogos[index] = el;
+    }
+    for (let index = 0; index < result.citylogos.length; index++) {
+      const el = result.citylogos[index];
+      el.key = el.key ? await getUrl(el.key) : null;
+      result.citylogos[index] = el;
+    }
     res.sendResponse(result);
   },
   getPropertyById: async (req, res, next) => {

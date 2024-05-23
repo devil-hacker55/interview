@@ -771,6 +771,12 @@ module.exports = {
     const response = getPagingData(result, page, limit);
     return response;
   },
+  getAllImagesLogos: async () => {
+    let banklogos = await db.banklogos.findAll()
+    let propertylogos = await db.propertylogos.findAll()
+    let citylogos = await db.citylogos.findAll()
+    return {banklogos,propertylogos,citylogos};
+  },
   likeProperty: async (user, propertyId) => {
     await module.exports.getPropertyById(propertyId);
 
@@ -985,7 +991,7 @@ module.exports = {
       }
     })
     console.log("lllll", alreadyBooked)
-    if (alreadyBooked) throw new createHttpError.Conflict("You already have booked,please wait for our team to revert back.")
+    if (alreadyBooked) throw new createHttpError.Conflict("You already downloaded brochure,please wait for our team to revert back.")
 
     let property = await module.exports.getPropertyByIdForBrochure(body.propertyId)
     if (property.propertyStatus != "UNDERCONSTRUCTION") throw new createHttpError.NotAcceptable("feature is for underconstructor properties")

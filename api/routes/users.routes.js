@@ -112,6 +112,11 @@ router.post(
   imageUpload,
   PromiseHandler(userController.saveUploadImage)
 );
+router.post(
+  "/uploadImagecity",
+  imageUpload,
+  PromiseHandler(userController.saveUploadImagecity)
+);
 
 router.post(
   "/contactProperty/:userId",
@@ -125,6 +130,12 @@ router.get(
   authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllPropertyVisits)
+);
+router.get(
+  "/getAllImagesLogos/:userId",
+  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllImagesLogos)
 );
 router.get(
   "/getPropertyById/:userId",
