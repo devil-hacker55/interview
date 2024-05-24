@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING
                 // required: true,
             },
+            query: {
+                type: DataTypes.STRING
+                // required: true,
+            },
             status: {
                 type: DataTypes.ENUM("PENDING", "DONE", "REJECTED"),
                 defaultValue: "PENDING",
