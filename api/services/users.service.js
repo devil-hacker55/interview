@@ -427,7 +427,7 @@ module.exports = {
           model: db.categories,
           //required: false,
           where: {
-            ...(category && {category: category}),
+            ...(category && { category: category }),
           },
         },
         {
@@ -620,11 +620,11 @@ module.exports = {
   changeStatusOfContactUs: async (reqObj) => {
     //module.exports.getPropertyById(reqObj.propertyId)
     let data = await db.contactus.findOne({
-      where:{
-        id:reqObj.contactUsId
+      where: {
+        id: reqObj.contactUsId
       }
     })
-    if(!data )  throw new createHttpError.NotFound("contactus not found")
+    if (!data) throw new createHttpError.NotFound("contactus not found")
     let property = await db.contactus.update({ status: reqObj.status }, { where: { id: reqObj.contactUsId } });
     return property;
   },
@@ -783,7 +783,7 @@ module.exports = {
     let banklogos = await db.banklogos.findAll()
     let propertylogos = await db.propertylogos.findAll()
     let citylogos = await db.citylogos.findAll()
-    return {banklogos,propertylogos,citylogos};
+    return { banklogos, propertylogos, citylogos };
   },
   likeProperty: async (user, propertyId) => {
     await module.exports.getPropertyById(propertyId);
@@ -1172,8 +1172,8 @@ module.exports = {
     return response;
   },
   contactUs: async (reqObj) => {
-      let data = await db.contactus.create(reqObj)
-      return data
+    let data = await db.contactus.create(reqObj)
+    return data
   },
   getAllContactUs: async (page, size) => {
     const { limit, offset } = getPagination(page, size);
@@ -1197,5 +1197,50 @@ module.exports = {
     await db.properties.destroy({ where: { id: propertyId } });
     return true
   },
-  
+  categoryWiseCount: async () => {
+    let data = await db.properties.findAll({
+      where: {
+        admin_status: "ACCEPTED"
+      },
+      include: {
+        model: db.categories,
+        attributes: ["id", "category"]
+      }
+    })
+
+    const categories = [
+      "Apartments",
+      "Bungalow",
+      "Simplex",
+      "Duplex",
+      "Penthouse",
+      "Villa",
+      "Full Floor Property",
+      "Whole Building",
+      "Residential Plot"
+    ];
+
+    const countPropertiesByCategory = (data, categories) => {
+      const categoryCounts = {};
+
+      // Initialize category counts to 0
+      categories.forEach(category => {
+        categoryCounts[category] = 0;
+      });
+
+      // Iterate through each property and increment the respective category count
+      data.forEach(property => {
+        if (property.category && categories.includes(property.category.category)) {
+          categoryCounts[property.category.category]++;
+        }
+      });
+
+      return categoryCounts;
+    };
+
+    const categoryCounts = countPropertiesByCategory(data, categories);
+    console.log("categoryCounts",categoryCounts);
+    
+  },
+
 };

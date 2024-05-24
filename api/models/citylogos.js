@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING
                 // required: true,
             }
+            ,heading: {
+                type: DataTypes.STRING
+                // required: true,
+            }
         },
         {
             sequelize,

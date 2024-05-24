@@ -22,8 +22,8 @@ module.exports = (async function initialize() {
     await db.sequelize.authenticate();
     // console.log(" => Database Authenticated Successfully !!")
     // sync all models with database
-    await db.sequelize.sync({ force: false });
-    // await db.users.sync({ alter: true });
+    //await db.sequelize.sync({ force: false });
+     await db.propertylogos.sync({ alter: true });
     // console.log(" => Database Synced Successfully !!")
     db.hy = "hyy"
     return db

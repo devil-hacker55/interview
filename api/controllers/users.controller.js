@@ -848,4 +848,10 @@ module.exports = {
     let result = await userService.deleteProperty(req.params.propertyId)
     res.sendResponse(result);
   },
+  categoryWiseCount: async (req, res, next) => {
+    //await userService.getUserById(req.params.userId);
+    let result = await userService.categoryWiseCount()
+    console.log("kkk",result)
+    res.sendResponse(result);
+  },
 };

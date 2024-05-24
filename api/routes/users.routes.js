@@ -285,4 +285,10 @@ router.delete(
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.deleteProperty)
 );
+router.get(
+  "/categoryWiseCount",
+  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.categoryWiseCount)
+);
 module.exports = router;
