@@ -617,6 +617,17 @@ module.exports = {
     let property = await db.properties.update({ admin_status: reqObj.admin_status }, { where: { id: reqObj.propertyId } });
     return property;
   },
+  changeStatusOfContactUs: async (reqObj) => {
+    //module.exports.getPropertyById(reqObj.propertyId)
+    let data = await db.contactus.findOne({
+      where:{
+        id:reqObj.contactUsId
+      }
+    })
+    if(!data )  throw new createHttpError.NotFound("contactus not found")
+    let property = await db.contactus.update({ status: reqObj.status }, { where: { id: reqObj.contactUsId } });
+    return property;
+  },
   changeStatusOfPromoteAs: async (reqObj) => {
     module.exports.getPropertyById(reqObj.propertyId)
     let property = await db.properties.update({ promoteAs: reqObj.promoteAs }, { where: { id: reqObj.propertyId } });
@@ -1160,4 +1171,31 @@ module.exports = {
     const response = getPagingData(result, page, limit);
     return response;
   },
+  contactUs: async (reqObj) => {
+      let data = await db.contactus.create(reqObj)
+      return data
+  },
+  getAllContactUs: async (page, size) => {
+    const { limit, offset } = getPagination(page, size);
+    let result = await db.contactus.findAndCountAll({
+      // include: {
+      //   model: db.users
+      // },
+      distinct: true,
+      order: [["createdAt", "desc"]],
+      limit,
+      offset,
+    });
+
+    if (result.rows.length <= 0)
+      throw new createHttpError.NotFound("No enquiries found");
+    const response = getPagingData(result, page, limit);
+    return response;
+  },
+  deleteProperty: async (propertyId) => {
+    await module.exports.getPropertyById(propertyId)
+    await db.properties.destroy({ where: { id: propertyId } });
+    return true
+  },
+  
 };

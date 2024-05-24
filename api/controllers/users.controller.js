@@ -564,6 +564,13 @@ module.exports = {
       msg: "success",
     });
   },
+  changeStatusOfContactUs: async (req, res, next) => {
+    let reqObj = req.body;
+    await userService.changeStatusOfContactUs(reqObj);
+    return res.sendResponse({
+      msg: "success",
+    });
+  },
   changeStatusOfPromoteAs: async (req, res, next) => {
     let reqObj = req.body;
     await userService.changeStatusOfPromoteAs(reqObj);
@@ -824,6 +831,21 @@ module.exports = {
     //   el.productImage = el.productImage ? await getUrl(el.productImage) : null;
     //   result.property_images[index] = el;
     // }
+    res.sendResponse(result);
+  },
+  contactUs: async (req, res, next) => {
+    let result = await userService.contactUs(req.body)
+
+    res.sendResponse(result);
+  },
+  getAllContactUs: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let result = await userService.getAllContactUs(req.query.page, req.query.size)
+    res.sendResponse(result);
+  },
+  deleteProperty: async (req, res, next) => {
+    //await userService.getUserById(req.params.userId);
+    let result = await userService.deleteProperty(req.params.propertyId)
     res.sendResponse(result);
   },
 };

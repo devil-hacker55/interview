@@ -261,4 +261,28 @@ router.get(
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllYt)
 );
+router.post(
+  "/contactUs",
+  //authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.contactUs)
+);
+router.get(
+  "/admin/getAllContactUs/:userId",
+  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.getAllContactUs)
+);
+router.put(
+  "/admin/changeStatusOfContactUs/:userId",
+  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.changeStatusOfContactUs)
+);
+router.delete(
+  "/admin/deleteProperty/:propertyId",
+  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.deleteProperty)
+);
 module.exports = router;
