@@ -132,8 +132,8 @@ router.get(
   PromiseHandler(userController.getAllPropertyVisits)
 );
 router.get(
-  "/getAllImagesLogos/:userId",
-  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  "/getAllImagesLogos",
+  //authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllImagesLogos)
 );
