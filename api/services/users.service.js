@@ -1283,6 +1283,11 @@ module.exports = {
   deleteProperty: async (propertyId) => {
     await module.exports.getPropertyById(propertyId)
     await db.properties.destroy({ where: { id: propertyId } });
+    let meet = await db.bookmeets.findAll({ where: { propertyId: propertyId } })
+    if (meet.length > 0) {
+      await db.bookmeets.destroy({ where: { propertyId: propertyId } });
+    }
+
     return true
   },
   categoryWiseCount: async () => {
