@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         landmark: DataTypes.STRING(30),
         state: DataTypes.STRING(20),
         country: DataTypes.STRING(20),
-        map_link: DataTypes.STRING,
+        map_link: DataTypes.TEXT,
         locality: DataTypes.STRING,
     }, {
         sequelize,
