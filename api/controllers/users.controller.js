@@ -610,7 +610,7 @@ module.exports = {
     console.log("File uploaded successfully.", req.file);
     console.log("File uploaded successfully111", req.file.key);
     console.log(req.file);
-    await db.citylogos.create({ key: req.file.key })
+    await db.propertylogos.create({ key: req.file.key })
     res.sendResponse(
       {
         location: req.file.key,
@@ -672,9 +672,9 @@ module.exports = {
     result.brochure = result.brochure
       ? await getUrl(result.brochure)
       : null;
-    result.useraddress.map_link = result.useraddress.map_link
-      ? await getUrl(result.useraddress.map_link)
-      : null;
+    // result.useraddress.map_link = result.useraddress.map_link
+    //   ? await getUrl(result.useraddress.map_link)
+    //   : null;
     for (let index = 0; index < result.property_images.length; index++) {
       const el = result.property_images[index];
       el.productImage = el.productImage ? await getUrl(el.productImage) : null;
