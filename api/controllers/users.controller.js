@@ -610,7 +610,7 @@ module.exports = {
     console.log("File uploaded successfully.", req.file);
     console.log("File uploaded successfully111", req.file.key);
     console.log(req.file);
-    await db.banklogos.create({key: req.file.key})
+    await db.citylogos.create({ key: req.file.key })
     res.sendResponse(
       {
         location: req.file.key,
@@ -663,7 +663,7 @@ module.exports = {
     result.floor_plan = result.floor_plan
       ? await getUrl(result.floor_plan)
       : null;
-      result.master_plan = result.master_plan
+    result.master_plan = result.master_plan
       ? await getUrl(result.master_plan)
       : null;
     // result.map = result.map
@@ -692,15 +692,17 @@ module.exports = {
   },
   getUserLikedProperties: async (req, res, next) => {
     let userId = req.params.userId
-    let user = await userService.getUserById(userId)
-    let result = await userService.getUserLikedProperties(user);
-    if (result.totalrows <= 0) {
-      res.sendResponse(result);
-      //throw new createHttpError.NotFound("No properties found");
-    } else {
+    let category = req.query.category
+    await userService.getUserById(userId)
+    console.log(">>>>>11", userId)
+    let result = await userService.getUserLikedProperties(userId, category);
+    console.log(">>>>>pp", result)
+    if (result.length > 0) {
       for (const e of result) {
         e.property.coverImage = e.property.coverImage ? await getUrl(e.property.coverImage) : e.property.coverImage;
       }
+    } else {
+      res.sendResponse(result);
     }
     res.sendResponse(result);
   },
@@ -765,11 +767,11 @@ module.exports = {
   downloadBrochure: async (req, res, next) => {
     let user = await userService.getUserById(req.params.userId);
     let result = await userService.downloadBrochure(req.body, user)
-    console.log("result???",result.brochure)
+    console.log("result???", result.brochure)
 
     result.brochure = result.brochure
-    ? await getUrl(result.brochure)
-    : null;
+      ? await getUrl(result.brochure)
+      : null;
     res.sendResponse(result);
   },
   getAllCabBookingRequests: async (req, res, next) => {
@@ -851,7 +853,7 @@ module.exports = {
   categoryWiseCount: async (req, res, next) => {
     //await userService.getUserById(req.params.userId);
     let result = await userService.categoryWiseCount()
-    console.log("kkk",result)
+    console.log("kkk", result)
     res.sendResponse(result);
   },
 };

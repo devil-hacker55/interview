@@ -780,9 +780,21 @@ module.exports = {
     return response;
   },
   getAllImagesLogos: async () => {
-    let banklogos = await db.banklogos.findAll()
-    let propertylogos = await db.propertylogos.findAll()
-    let citylogos = await db.citylogos.findAll()
+    let banklogos = await db.banklogos.findAll({
+      order: [
+        ['createdAt', 'asc'] // Then, sort by createdAt in ascending order
+      ],
+    })
+    let propertylogos = await db.propertylogos.findAll({
+      order: [
+        ['createdAt', 'asc'] // Then, sort by createdAt in ascending order
+      ],
+    })
+    let citylogos = await db.citylogos.findAll({
+      order: [
+        ['createdAt', 'asc'] // Then, sort by createdAt in descending order
+      ],
+    })
     return { banklogos, propertylogos, citylogos };
   },
   likeProperty: async (user, propertyId) => {
@@ -805,21 +817,97 @@ module.exports = {
     return result;
 
   },
-  getUserLikedProperties: async (user) => {
-    let data = await user.getLikes({
+  getUserLikedProperties: async (userId, category) => {
+    let includeStatements = [
+      {
+        model: db.useraddresses,
+        attributes: ['address']
+      }
+    ];
+
+    // Conditionally add the category filter to the include array
+    if (category) {
+      includeStatements.push({
+        model: db.categories,
+        where: {
+          category: category
+        }
+      });
+    } else {
+      includeStatements.push({
+        model: db.categories
+      });
+    }
+
+    let data1 = await db.likes.findAll({
+      where: {
+        userId: userId
+      },
       attributes: ["id"],
       include: {
         model: db.properties,
-        include: {
-          model: db.useraddresses,
-          attributes: ['address']
-          // where: {
-          //   ...(city && { city: city }),
-          // },
-        },
+        // attributes: [
+        //   'id', 'propertyName', 'purpose', 'propertyStatus',
+        //   'propertyType', 'roomType', 'no_of_balconies', 'No_of_bathrooms',
+        //   'additional_rooms', 'facing', 'ownership', 'floor', 'furnishing',
+        //   'parking', 'floor_plan', 'brochure', 'salePrice', 'area',
+        //   'booking_amt_percentage', 'maintenance_price', 'possession',
+        //   'rera_number', 'description', 'lift', 'wifi', 'club_house',
+        //   'swimming_pool', 'reserved_parking', 'security',
+        //   'power_back_up', 'water_storage', 'coverImage',
+        //   'promoteAs', 'categoryId',
+        // ],
+        include: includeStatements
       }
-    })
-    return data;
+    });
+
+    // Filter out entries with null properties
+    let filteredData = data1.filter(entry => entry.property !== null);
+
+    //console.log(filteredData);
+    return filteredData;
+
+    // let data1 = await db.likes.findAll({
+    //   where: {
+    //     userId: userId
+    //   },
+    //   attributes: ["id"], 
+    //   include: {
+    //     model: db.properties,
+    //     include: [{
+    //       model: db.useraddresses,
+    //       attributes: ['address']
+    //       // where: {
+    //       //   ...(city && { city: city }),
+    //       // },
+    //     }, {
+    //       model: db.categories,
+    //       where: {
+    //         ...(category && { category: category }),
+    //       },
+    //     },]
+    //   }
+    // })
+    // let data = await user.getLikes({
+    //   attributes: ["id"],
+    //   include: {
+    //     model: db.properties,
+    //     include: [{
+    //       model: db.useraddresses,
+    //       attributes: ['address']
+    //       // where: {
+    //       //   ...(city && { city: city }),
+    //       // },
+    //     }, {
+    //       model: db.categories,
+    //       //required: false,
+    //       where: {
+    //         ...(category && { category: category }),
+    //       },
+    //     },]
+    //   }
+    // })
+
 
   },
   addInsight: async (user, reqObj) => {
@@ -1202,11 +1290,14 @@ module.exports = {
       where: {
         admin_status: "ACCEPTED"
       },
-      include: {
+      include: [{
         model: db.categories,
         attributes: ["id", "category"]
-      }
-    })
+      }, {
+        model: db.useraddresses,
+        attributes: ["id", "city"]
+      }]
+    });
 
     const categories = [
       "Apartments",
@@ -1218,6 +1309,14 @@ module.exports = {
       "Full Floor Property",
       "Whole Building",
       "Residential Plot"
+    ];
+
+    const cities = [
+      "pune",
+      "mumbai",
+      "chennai",
+      "bengaluru",
+      "delhi"
     ];
 
     const countPropertiesByCategory = (data, categories) => {
@@ -1238,9 +1337,30 @@ module.exports = {
       return categoryCounts;
     };
 
+    const countPropertiesByCity = (data, cities) => {
+      const cityCounts = {};
+
+      // Initialize city counts to 0
+      cities.forEach(city => {
+        cityCounts[city] = 0;
+      });
+
+      // Iterate through each property and increment the respective city count
+      data.forEach(property => {
+        if (property.useraddress && cities.includes(property.useraddress.city.toLowerCase())) {
+          cityCounts[property.useraddress.city.toLowerCase()]++;
+        }
+      });
+
+      return cityCounts;
+    };
+
     const categoryCounts = countPropertiesByCategory(data, categories);
-    console.log("categoryCounts",categoryCounts);
-    
-  },
+    const cityCounts = countPropertiesByCity(data, cities);
+
+    return { categoryCounts, cityCounts };
+  }
+
+
 
 };
