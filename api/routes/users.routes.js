@@ -68,7 +68,7 @@ router.put(
 
 router.get(
   "/getAllCategory",
-  authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
+  //authorizeNew([userTypes.CLIENT, userTypes.SUPERADMIN, userTypes.CUSTOMER]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllCategory)
 );
