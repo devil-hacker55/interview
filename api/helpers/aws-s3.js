@@ -18,7 +18,7 @@ async function getUrl(myKey) {
   return s3.getSignedUrlPromise("getObject", {
     Bucket: AWS_Bucket_Name,
     Key: myKey,
-    Expires: 60 * 5,
+    Expires: 60 * 60 * 6//60 * 5,
   });
 }
 
