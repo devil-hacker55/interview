@@ -198,10 +198,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
-            clubHouse: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-            },
             conciergeServices: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
