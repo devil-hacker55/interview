@@ -153,6 +153,99 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
             },
+            intercomFacility: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            laundryService: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            maintenanceStaff: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            outdoorTennisCourts: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            wasteDisposal: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            workFromHomeFacility: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            helipad: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            spaAndSauna: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            banquetHall: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+
+            barLounge: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },            
+            cafeteriaFoodCourt: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            clubHouse: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            conciergeServices: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            conferenceRoom: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            dthTelevisionFacility: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            downtown: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            fingerprintAccess: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            fireplace: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            herbalGarden: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            golfCourse: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            healthClubWithSteamJaccuzi: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            jacuzzi: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
+            hilltop: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
+            },
             coverImage: {
                 type: DataTypes.STRING,
                 defaultValue: null
