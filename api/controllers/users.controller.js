@@ -463,10 +463,10 @@ module.exports = {
     return res.sendResponse("Property added!");
   },
   editProperty: async (req, res, next) => {
-    let { addProperty, propertyImages, address } = req.body;
+    let { addProperty, propertyImages, address, deletePropertyImages } = req.body;
     let propertyId = req.params.propertyId
     //let user = await userService.getUserById(propertyId);
-    await userService.editProperty(propertyId, addProperty, propertyImages, address);
+    await userService.editProperty(propertyId, addProperty, propertyImages, address, deletePropertyImages);
 
     return res.sendResponse("Property added!");
   },
@@ -485,6 +485,7 @@ module.exports = {
       req.query.promoteAs,
       req.query.adminAdded
     );
+    console.log("ROOM",req.query.roomType)
     if (result.totalrows <= 0) {
       res.sendResponse(result);
       //throw new createHttpError.NotFound("No properties found");

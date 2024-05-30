@@ -306,28 +306,28 @@ module.exports = {
     }
     return property;
   },
-  editProperty: async (propertyId, addProperty, propertyImages, address) => {
+  editProperty: async (propertyId, addProperty, propertyImages, address, deletePropertyImages) => {
     let property = await module.exports.getPropertyById(propertyId);
     //let property = await user.createProperty(addProperty);
     if (addProperty) {
+      console.log("Inaddon property")
       await property.set(addProperty)
       await property.save();
       await property.reload();
+      console.log("Inaddon property complrete")
     }
     if (propertyImages.length > 0) {
-      await db.property_images.destroy({
-        where: {
-          propertyId: property.id
-        }
-      });
+      console.log("propertyImages property")
       let productImagesData = propertyImages.map((image) => ({
         propertyId: property.id,
         productImage: image,
       }));
       await db.property_images.bulkCreate(productImagesData);
       await property.reload();
+      console.log("propertyImages donee property")
     }
     if (address) {
+      console.log("adress propertyadress")
       let primaryAdd = await property.getUseraddress();
       if (primaryAdd) {
         await primaryAdd.set(address);
@@ -335,11 +335,34 @@ module.exports = {
       } else {
         await property.createUseraddress(address);
       }
+      console.log("adress propertyadresss doneee")
+    }
+    if (deletePropertyImages.length > 0) {
+      console.log("deletePropertyImages propertyadresss", deletePropertyImages)
+      await db.property_images.destroy({
+        where: {
+          id: deletePropertyImages
+        }
+      });
+      console.log("deletePropertyImages propertyadresss done")
     }
     return property;
   },
   getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
     const { limit, offset } = getPagination(page, size);
+    const roomTypeCondition = roomType ? {
+      [Op.or]: Array.isArray(roomType) ? 
+        roomType.map(type => ({
+          roomType: {
+            [Op.like]: `%${type}%`
+          }
+        })) : 
+        {
+          roomType: {
+            [Op.like]: `%${roomType}%`
+          }
+        }
+    } : {};
     let result = await db.properties.findAndCountAll({
       where: {
         //...(userId && { userId: userId }),
@@ -348,8 +371,15 @@ module.exports = {
 
         ...(admin_status && { admin_status: admin_status }),
 
-        ...(roomType && { roomType: roomType }),
+        // ...(roomType && {
+        //   [Op.or]: {
+        //     roomType: {
+        //       [Op.like]: `%${roomType}%`,
+        //     },
 
+        //   },
+        // }),
+        ...roomTypeCondition,
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
         ...(promoteAs && { promoteAs: promoteAs }),
@@ -427,7 +457,7 @@ module.exports = {
           model: db.categories,
           //required: false,
           where: {
-            ...(category && { category: category }),
+            ...(category && { id: category }),
           },
         },
         {
