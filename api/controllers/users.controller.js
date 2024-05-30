@@ -468,7 +468,7 @@ module.exports = {
     //let user = await userService.getUserById(propertyId);
     await userService.editProperty(propertyId, addProperty, propertyImages, address, deletePropertyImages);
 
-    return res.sendResponse("Property added!");
+    return res.sendResponse("Property updated!");
   },
   getAllProperty: async (req, res, next) => {
     let result = await userService.getAllProperty(
