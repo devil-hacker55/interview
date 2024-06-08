@@ -348,7 +348,7 @@ module.exports = {
     }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
     const { limit, offset } = getPagination(page, size);
     const roomTypeCondition = roomType ? {
       [Op.or]: Array.isArray(roomType) ? 
@@ -365,7 +365,7 @@ module.exports = {
     } : {};
     let result = await db.properties.findAndCountAll({
       where: {
-        //...(userId && { userId: userId }),
+        ...(userId && { userId: userId }),
 
         ...(adminAdded && { adminAdded: adminAdded }),
 
@@ -447,6 +447,7 @@ module.exports = {
           model: db.useraddresses,
           where: {
             ...(city && { city: city }),
+            ...(country && { country: country }),
           },
         },
         {
@@ -493,7 +494,7 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
     const { limit, offset } = getPagination(page, size);
     console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
@@ -576,6 +577,7 @@ module.exports = {
           model: db.useraddresses,
           where: {
             ...(city && { city: city }),
+            ...(country && { country: country }),
           },
         },
         {
@@ -1289,6 +1291,23 @@ module.exports = {
     const response = getPagingData(result, page, limit);
     return response;
   },
+  deleteInsight: async (page, size) => {
+    const { limit, offset } = getPagination(page, size);
+    let result = await db.youtubes.findAndCountAll({
+      // include: {
+      //   model: db.users
+      // },
+      distinct: true,
+      order: [["createdAt", "desc"]],
+      limit,
+      offset,
+    });
+
+    if (result.rows.length <= 0)
+      throw new createHttpError.NotFound("No youtube links found");
+    const response = getPagingData(result, page, limit);
+    return response;
+  },
   contactUs: async (reqObj) => {
     let data = await db.contactus.create(reqObj)
     return data
@@ -1296,10 +1315,13 @@ module.exports = {
   getAllContactUs: async (page, size) => {
     const { limit, offset } = getPagination(page, size);
     let result = await db.contactus.findAndCountAll({
-      // include: {
-      //   model: db.users
-      // },
-      distinct: true,
+      attributes:['id', 'name', 'email', 'mobile', 'query', 'status', 'createdAt'],
+      include: {
+        model: db.properties,
+        attributes:['id','propertyName'],
+        required:false
+      },
+      //distinct: true,
       order: [["createdAt", "desc"]],
       limit,
       offset,

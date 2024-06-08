@@ -483,7 +483,8 @@ module.exports = {
       req.query.roomType,
       req.query.propertyStatus,
       req.query.promoteAs,
-      req.query.adminAdded
+      req.query.adminAdded,
+      req.query.country
     );
     console.log("ROOM",req.query.roomType)
     if (result.totalrows <= 0) {
@@ -525,7 +526,8 @@ module.exports = {
       req.query.roomType,
       req.query.propertyStatus,
       req.query.promoteAs,
-      req.query.adminAdded
+      req.query.adminAdded,
+      req.query.country
     );
     if (result.totalrows <= 0) {
       res.sendResponse(result);
@@ -611,7 +613,7 @@ module.exports = {
     console.log("File uploaded successfully.", req.file);
     console.log("File uploaded successfully111", req.file.key);
     console.log(req.file);
-    await db.propertylogos.create({ key: req.file.key })
+    await db.citylogos.create({ key: req.file.key })
     res.sendResponse(
       {
         location: req.file.key,
@@ -835,6 +837,59 @@ module.exports = {
     //   result.property_images[index] = el;
     // }
     res.sendResponse(result);
+  },
+  deleteYt: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let youtubes = await db.youtubes.findOne({
+      where: {
+        id: req.query.ytId
+      },
+      attributes:['id']
+    })
+    if (!youtubes) throw new createHttpError.NotFound("Insight not found");
+    await youtubes.destroy();
+    // await db.property_images.destroy({
+    //   where: {
+    //     id: deletePropertyImages
+    //   }
+    // });
+    res.sendResponse("Deleted Successfully");
+  },
+  deleteInsight: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let insights = await db.insights.findOne({
+      where: {
+        id: req.query.insightId
+      },
+      attributes:['id']
+    })
+    if (!insights) throw new createHttpError.NotFound("Insight not found");
+    await insights.destroy();
+    // await db.property_images.destroy({
+    //   where: {
+    //     id: deletePropertyImages
+    //   }
+    // });
+    res.sendResponse("Deleted Successfully");
+  },
+  updateInsight: async (req, res, next) => {
+    await userService.getUserById(req.params.userId);
+    let data = req.body;
+    let insights = await db.insights.findOne({
+      where: {
+        id: req.query.insightId
+      },
+      //attributes:['id']
+    })
+    if (!insights) throw new createHttpError.NotFound("Insight not found");
+    await insights.set(data);
+    await insights.save()
+    // await db.property_images.destroy({
+    //   where: {
+    //     id: deletePropertyImages
+    //   }
+    // });
+    res.sendResponse("Updated Successfully");
   },
   contactUs: async (req, res, next) => {
     let result = await userService.contactUs(req.body)

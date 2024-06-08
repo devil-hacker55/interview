@@ -261,6 +261,24 @@ router.get(
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllYt)
 );
+router.delete(
+  "/admin/deleteYt/:userId",
+  authorizeNew([ userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.deleteYt)
+);
+router.delete(
+  "/admin/deleteInsight/:userId",
+  authorizeNew([ userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.deleteInsight)
+);
+router.put(
+  "/admin/updateInsight/:userId",
+  authorizeNew([ userTypes.SUPERADMIN]),
+  //goodsValidate.goodsValidateSchema,
+  PromiseHandler(userController.updateInsight)
+);
 router.post(
   "/contactUs",
   //authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),

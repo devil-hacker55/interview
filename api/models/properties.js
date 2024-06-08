@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
             // });
             properties.belongsTo(models.categories)
             properties.belongsTo(models.users)
+            properties.hasMany(models.contactus)
             //features
         }
     }
@@ -132,6 +133,10 @@ module.exports = (sequelize, DataTypes) => {
             reserved_parking: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,
+            },
+            No_reserved_parking: {
+                type: DataTypes.DOUBLE,
+                defaultValue: 0,
             },
             security: {
                 type: DataTypes.BOOLEAN,
