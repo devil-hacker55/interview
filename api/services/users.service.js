@@ -363,6 +363,7 @@ module.exports = {
           }
         }
     } : {};
+    console.log("UsderId",userId)
     let result = await db.properties.findAndCountAll({
       where: {
         ...(userId && { userId: userId }),
@@ -496,13 +497,13 @@ module.exports = {
   },
   getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
     const { limit, offset } = getPagination(page, size);
-    console.log("us111", userId)
+    //console.log("us111", userId)
     let result = await db.properties.findAndCountAll({
       where: {
         admin_status: {
           [Op.ne]: "REJECTED"
         },
-        //...(userId && { userId: userId }),
+        ...(userId && { userId: userId }),
 
         ...(adminAdded && { adminAdded: adminAdded }),
 
