@@ -363,7 +363,7 @@ module.exports = {
           }
         }
     } : {};
-    console.log("UsderId",userId)
+    //console.log("UsderId",userId)
     let result = await db.properties.findAndCountAll({
       where: {
         ...(userId && { userId: userId }),
@@ -498,6 +498,19 @@ module.exports = {
   getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
     const { limit, offset } = getPagination(page, size);
     //console.log("us111", userId)
+    const roomTypeCondition = roomType ? {
+      [Op.or]: Array.isArray(roomType) ? 
+        roomType.map(type => ({
+          roomType: {
+            [Op.like]: `%${type}%`
+          }
+        })) : 
+        {
+          roomType: {
+            [Op.like]: `%${roomType}%`
+          }
+        }
+    } : {};
     let result = await db.properties.findAndCountAll({
       where: {
         admin_status: {
@@ -509,7 +522,8 @@ module.exports = {
 
         ...(admin_status && { admin_status: admin_status }),
 
-        ...(roomType && { roomType: roomType }),
+        //...(roomType && { roomType: roomType }),
+        ...roomTypeCondition,
 
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
@@ -587,7 +601,7 @@ module.exports = {
         },
         {
           model: db.categories,
-          required: false,
+          //required: false,
           where: {
             ...(category && { id: category }),
           },
