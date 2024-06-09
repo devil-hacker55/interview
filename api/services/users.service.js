@@ -589,11 +589,7 @@ module.exports = {
           model: db.categories,
           required: false,
           where: {
-            ...(category && {
-              category: {
-                [Op.like]: `%${category}%`,
-              },
-            }),
+            ...(category && { id: category }),
           },
         },
         {
