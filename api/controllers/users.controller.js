@@ -463,10 +463,10 @@ module.exports = {
     return res.sendResponse("Property added!");
   },
   editProperty: async (req, res, next) => {
-    let { addProperty, propertyImages, address, deletePropertyImages } = req.body;
+    let { addProperty, propertyImages, address, deletePropertyImages, propertyFaq } = req.body;
     let propertyId = req.params.propertyId
     //let user = await userService.getUserById(propertyId);
-    await userService.editProperty(propertyId, addProperty, propertyImages, address, deletePropertyImages);
+    await userService.editProperty(propertyId, addProperty, propertyImages, address, deletePropertyImages, propertyFaq);
 
     return res.sendResponse("Property updated!");
   },
@@ -486,7 +486,7 @@ module.exports = {
       req.query.adminAdded,
       req.query.country
     );
-    console.log("ROOM",req.query.roomType)
+    console.log("ROOM", req.query.roomType)
     if (result.totalrows <= 0) {
       res.sendResponse(result);
       //throw new createHttpError.NotFound("No properties found");
@@ -844,7 +844,7 @@ module.exports = {
       where: {
         id: req.query.ytId
       },
-      attributes:['id']
+      attributes: ['id']
     })
     if (!youtubes) throw new createHttpError.NotFound("Insight not found");
     await youtubes.destroy();
@@ -861,7 +861,7 @@ module.exports = {
       where: {
         id: req.query.insightId
       },
-      attributes:['id']
+      attributes: ['id']
     })
     if (!insights) throw new createHttpError.NotFound("Insight not found");
     await insights.destroy();
@@ -898,7 +898,7 @@ module.exports = {
   },
   getAllContactUs: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    let result = await userService.getAllContactUs(req.query.page, req.query.size)
+    let result = await userService.getAllContactUs(req.query.page, req.query.size,req.query.search)
     res.sendResponse(result);
   },
   deleteProperty: async (req, res, next) => {

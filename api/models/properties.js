@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
             properties.hasMany(models.property_visits, { onDelete: 'CASCADE' });
             properties.hasMany(models.likes, { onDelete: 'CASCADE' });
             properties.hasMany(models.bookmeets, { onDelete: 'CASCADE' });
+            properties.hasMany(models.property_faqs, { onDelete: 'CASCADE' });
+            properties.hasMany(models.property_nearbys, { onDelete: 'CASCADE' });
             // properties.hasMany(models.properties, {
             //     foreignKey: "parentId",
             //     targetKey: "id",

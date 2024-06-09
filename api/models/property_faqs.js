@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class contactus extends Model {
+    class property_faqs extends Model {
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -9,11 +9,10 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            contactus.belongsTo(models.properties)
-    
+            property_faqs.belongsTo(models.properties, { onDelete: 'CASCADE' });
         }
     }
-    contactus.init(
+    property_faqs.init(
         {
             id: {
                 type: DataTypes.UUID,
@@ -21,31 +20,18 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 defaultValue: DataTypes.UUIDV4,
             },
-            name: {
-                type: DataTypes.STRING
-                // required: true,
-            },email: {
-                type: DataTypes.STRING
-                // required: true,
-            },mobile: {
+            question: {
                 type: DataTypes.STRING
                 // required: true,
             },
-            query: {
+            answer: {
                 type: DataTypes.STRING
                 // required: true,
-            },
-            about:{
-                type:DataTypes.ENUM("PROPERTY", "QUERY", "VASTU","HOMELOANS", "LEGALSEARVICE")
-            },
-            status: {
-                type: DataTypes.ENUM("PENDING", "DONE", "REJECTED"),
-                defaultValue: "PENDING",
-            },
+            }
         },
         {
             sequelize,
-            modelName: "contactus",
+            modelName: "property_faqs",
             // defaultScope: {
             //     // exclude password hash by default
             //     attributes: { exclude: ["password", "createdAt", "updatedAt"] },
@@ -56,5 +42,5 @@ module.exports = (sequelize, DataTypes) => {
             },
         }
     );
-    return contactus;
+    return property_faqs;
 };

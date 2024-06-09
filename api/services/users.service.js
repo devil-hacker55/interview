@@ -225,7 +225,13 @@ module.exports = {
       {
         model: db.categories,
         required: false,
-      }],
+      },
+      {
+        model: db.property_faqs,
+        required: false,
+        attributes:['id','question','answer']
+      }
+    ],
     });
     if (!user) throw new createHttpError.NotFound("property not found");
     return user;
@@ -306,7 +312,7 @@ module.exports = {
     }
     return property;
   },
-  editProperty: async (propertyId, addProperty, propertyImages, address, deletePropertyImages) => {
+  editProperty: async (propertyId, addProperty, propertyImages, address, deletePropertyImages, propertyFaq) => {
     let property = await module.exports.getPropertyById(propertyId);
     //let property = await user.createProperty(addProperty);
     if (addProperty) {
@@ -346,17 +352,26 @@ module.exports = {
       });
       console.log("deletePropertyImages propertyadresss done")
     }
+    if (propertyFaq.length > 0) {
+      // let productFaqData = propertyFaq.map((image) => ({
+      //   propertyId: property.id,
+      //   productImage: image,
+      // }));
+      let propertyfaqs = await db.property_faqs.bulkCreate(propertyFaq);
+      await property.addProperty_faqs(propertyfaqs)
+
+    }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country) => {
     const { limit, offset } = getPagination(page, size);
     const roomTypeCondition = roomType ? {
-      [Op.or]: Array.isArray(roomType) ? 
+      [Op.or]: Array.isArray(roomType) ?
         roomType.map(type => ({
           roomType: {
             [Op.like]: `%${type}%`
           }
-        })) : 
+        })) :
         {
           roomType: {
             [Op.like]: `%${roomType}%`
@@ -495,16 +510,16 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded,country) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country) => {
     const { limit, offset } = getPagination(page, size);
     //console.log("us111", userId)
     const roomTypeCondition = roomType ? {
-      [Op.or]: Array.isArray(roomType) ? 
+      [Op.or]: Array.isArray(roomType) ?
         roomType.map(type => ({
           roomType: {
             [Op.like]: `%${type}%`
           }
-        })) : 
+        })) :
         {
           roomType: {
             [Op.like]: `%${roomType}%`
@@ -1323,14 +1338,17 @@ module.exports = {
     let data = await db.contactus.create(reqObj)
     return data
   },
-  getAllContactUs: async (page, size) => {
+  getAllContactUs: async (page, size, search) => {
     const { limit, offset } = getPagination(page, size);
     let result = await db.contactus.findAndCountAll({
-      attributes:['id', 'name', 'email', 'mobile', 'query', 'status', 'createdAt'],
+      attributes: ['id', 'name', 'email', 'mobile', 'query', 'status', 'createdAt'],
+      where:{
+        ...(search && { about: search }),
+      },
       include: {
         model: db.properties,
-        attributes:['id','propertyName'],
-        required:false
+        attributes: ['id', 'propertyName'],
+        required: false
       },
       //distinct: true,
       order: [["createdAt", "desc"]],

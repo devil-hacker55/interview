@@ -251,7 +251,7 @@ router.get(
 );
 router.post(
   "/admin/yt/:userId",
-  authorizeNew([ userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.yt)
 );
@@ -263,19 +263,19 @@ router.get(
 );
 router.delete(
   "/admin/deleteYt/:userId",
-  authorizeNew([ userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.deleteYt)
 );
 router.delete(
   "/admin/deleteInsight/:userId",
-  authorizeNew([ userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.deleteInsight)
 );
 router.put(
   "/admin/updateInsight/:userId",
-  authorizeNew([ userTypes.SUPERADMIN]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.updateInsight)
 );
@@ -287,25 +287,25 @@ router.post(
 );
 router.get(
   "/admin/getAllContactUs/:userId",
-  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.getAllContactUs)
 );
 router.put(
   "/admin/changeStatusOfContactUs/:userId",
-  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.changeStatusOfContactUs)
 );
 router.delete(
   "/admin/deleteProperty/:propertyId",
-  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  authorizeNew([userTypes.SUPERADMIN]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.deleteProperty)
 );
 router.get(
   "/categoryWiseCount",
-  authorizeNew([ userTypes.SUPERADMIN,userTypes.CLIENT]),
+  authorizeNew([userTypes.SUPERADMIN, userTypes.CLIENT]),
   //goodsValidate.goodsValidateSchema,
   PromiseHandler(userController.categoryWiseCount)
 );
