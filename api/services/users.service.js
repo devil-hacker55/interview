@@ -229,9 +229,9 @@ module.exports = {
       {
         model: db.property_faqs,
         required: false,
-        attributes:['id','question','answer']
+        attributes: ['id', 'question', 'answer']
       }
-    ],
+      ],
     });
     if (!user) throw new createHttpError.NotFound("property not found");
     return user;
@@ -1049,7 +1049,9 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "count", "contactedAt", "userId", "status"],
+      attributes: ["id", "count", 
+        [db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(contactedAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'contactedAt'],
+        /*[db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(property_visits.createdAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'pp']*/"userId", "status"],
       include: [{
         model: db.users,
         attributes: ["id", "firstName", "mobile", "email"],
@@ -1338,12 +1340,15 @@ module.exports = {
     let data = await db.contactus.create(reqObj)
     return data
   },
-  getAllContactUs: async (page, size, search) => {
+  getAllContactUs: async (page, size, search,status) => {
     const { limit, offset } = getPagination(page, size);
+    console.log("fff", search)
     let result = await db.contactus.findAndCountAll({
-      attributes: ['id', 'name', 'email', 'mobile', 'query', 'status', 'createdAt'],
-      where:{
+      attributes: ['id', 'name', 'email', 'mobile', 'query', 'about', 'status',
+        [db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(contactus.createdAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'createdAt']],
+      where: {
         ...(search && { about: search }),
+        ...(status && { status: status }),
       },
       include: {
         model: db.properties,

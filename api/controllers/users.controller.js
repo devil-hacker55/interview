@@ -898,7 +898,7 @@ module.exports = {
   },
   getAllContactUs: async (req, res, next) => {
     await userService.getUserById(req.params.userId);
-    let result = await userService.getAllContactUs(req.query.page, req.query.size,req.query.search)
+    let result = await userService.getAllContactUs(req.query.page, req.query.size,req.query.search,req.query.status)
     res.sendResponse(result);
   },
   deleteProperty: async (req, res, next) => {

@@ -66,9 +66,11 @@ const imageUpload = multer({
       extension === ".jpeg" ||
       extension === ".png" ||
       extension === ".pdf" ||
+      extension === ".webp" ||
       mimetyp === "image/png" ||
       mimetyp === "image/jpg" ||
-      mimetyp === "image/jpeg"
+      mimetyp === "image/jpeg" ||
+      mimetyp === "image/webp"
     ) {
       cb(null, true);
     } else {
