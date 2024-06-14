@@ -60,7 +60,7 @@ module.exports = (sequelize, DataTypes) => {
                 // required: true,
             },
             propertyType: {
-                type: DataTypes.ENUM("NEW", "RESALE"),
+                type: DataTypes.ENUM("NEW", "RESALE","PRELAUNCH"),
                 // required: true,
             },
             roomType: {
