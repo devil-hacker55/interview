@@ -1,0 +1,742 @@
+{
+    "country": [
+        {
+            "label": "India",
+            "value": "india"
+        },
+        {
+            "label": "UAE",
+            "value": "uae"
+        }
+    ],
+    "states": {
+        "india": [
+            {
+                "label": "Andhra Pradesh",
+                "value": "andhraPradesh"
+            },
+            {
+                "label": "Arunachal Pradesh",
+                "value": "arunachalPradesh"
+            },
+            {
+                "label": "Assam",
+                "value": "assam"
+            },
+            {
+                "label": "Bihar",
+                "value": "bihar"
+            },
+            {
+                "label": "Chhattisgarh",
+                "value": "chhattisgarh"
+            },
+            {
+                "label": "Goa",
+                "value": "goa"
+            },
+            {
+                "label": "Gujarat",
+                "value": "gujarat"
+            },
+            {
+                "label": "Haryana",
+                "value": "haryana"
+            },
+            {
+                "label": "Himachal Pradesh",
+                "value": "himachalPradesh"
+            },
+            {
+                "label": "Jharkhand",
+                "value": "jharkhand"
+            },
+            {
+                "label": "Karnataka",
+                "value": "karnataka"
+            },
+            {
+                "label": "Kerala",
+                "value": "kerala"
+            },
+            {
+                "label": "Madhya Pradesh",
+                "value": "madhyaPradesh"
+            },
+            {
+                "label": "Maharashtra",
+                "value": "maharashtra"
+            },
+            {
+                "label": "Manipur",
+                "value": "manipur"
+            },
+            {
+                "label": "Meghalaya",
+                "value": "meghalaya"
+            },
+            {
+                "label": "Mizoram",
+                "value": "mizoram"
+            },
+            {
+                "label": "Nagaland",
+                "value": "nagaland"
+            },
+            {
+                "label": "Odisha",
+                "value": "odisha"
+            },
+            {
+                "label": "Punjab",
+                "value": "punjab"
+            },
+            {
+                "label": "Rajasthan",
+                "value": "rajasthan"
+            },
+            {
+                "label": "Sikkim",
+                "value": "sikkim"
+            },
+            {
+                "label": "Tamil Nadu",
+                "value": "tamilNadu"
+            },
+            {
+                "label": "Telangana",
+                "value": "telangana"
+            },
+            {
+                "label": "Tripura",
+                "value": "tripura"
+            },
+            {
+                "label": "Uttar Pradesh",
+                "value": "uttarPradesh"
+            },
+            {
+                "label": "Uttarakhand",
+                "value": "uttarakhand"
+            },
+            {
+                "label": "West Bengal",
+                "value": "westBengal"
+            }
+        ],
+        "uae": [
+            {
+                "label": "Abu Dhabi",
+                "value": "abuDhabi"
+            },
+            {
+                "label": "Dubai",
+                "value": "dubai"
+            },
+            {
+                "label": "Sharjah",
+                "value": "sharjah"
+            },
+            {
+                "label": "Ajman",
+                "value": "ajman"
+            },
+            {
+                "label": "Umm Al Quwain",
+                "value": "ummAlQuwain"
+            },
+            {
+                "label": "Ras Al Khaimah",
+                "value": "rasAlKhaimah"
+            },
+            {
+                "label": "Fujairah",
+                "value": "fujairah"
+            }
+        ]
+    },
+    "cities": {
+        "andhraPradesh": [
+            {
+                "label": "Visakhapatnam",
+                "value": "visakhapatnam"
+            },
+            {
+                "label": "Vijayawada",
+                "value": "vijayawada"
+            },
+            {
+                "label": "Guntur",
+                "value": "guntur"
+            }
+        ],
+        "arunachalPradesh": [
+            {
+                "label": "Itanagar",
+                "value": "itanagar"
+            },
+            {
+                "label": "Tawang",
+                "value": "tawang"
+            },
+            {
+                "label": "Pasighat",
+                "value": "pasighat"
+            }
+        ],
+        "assam": [
+            {
+                "label": "Guwahati",
+                "value": "guwahati"
+            },
+            {
+                "label": "Dibrugarh",
+                "value": "dibrugarh"
+            },
+            {
+                "label": "Silchar",
+                "value": "silchar"
+            }
+        ],
+        "bihar": [
+            {
+                "label": "Patna",
+                "value": "patna"
+            },
+            {
+                "label": "Gaya",
+                "value": "gaya"
+            },
+            {
+                "label": "Bhagalpur",
+                "value": "bhagalpur"
+            }
+        ],
+        "chhattisgarh": [
+            {
+                "label": "Raipur",
+                "value": "raipur"
+            },
+            {
+                "label": "Bilaspur",
+                "value": "bilaspur"
+            },
+            {
+                "label": "Bhilai",
+                "value": "bhilai"
+            }
+        ],
+        "goa": [
+            {
+                "label": "Panaji",
+                "value": "panaji"
+            },
+            {
+                "label": "Margao",
+                "value": "margao"
+            },
+            {
+                "label": "Vasco da Gama",
+                "value": "vascoDaGama"
+            }
+        ],
+        "gujarat": [
+            {
+                "label": "Ahmedabad",
+                "value": "ahmedabad"
+            },
+            {
+                "label": "Surat",
+                "value": "surat"
+            },
+            {
+                "label": "Vadodara",
+                "value": "vadodara"
+            }
+        ],
+        "haryana": [
+            {
+                "label": "Gurugram",
+                "value": "gurugram"
+            },
+            {
+                "label": "Faridabad",
+                "value": "faridabad"
+            },
+            {
+                "label": "Panchkula",
+                "value": "panchkula"
+            }
+        ],
+        "himachalPradesh": [
+            {
+                "label": "Shimla",
+                "value": "shimla"
+            },
+            {
+                "label": "Manali",
+                "value": "manali"
+            },
+            {
+                "label": "Dharamshala",
+                "value": "dharamshala"
+            }
+        ],
+        "jharkhand": [
+            {
+                "label": "Ranchi",
+                "value": "ranchi"
+            },
+            {
+                "label": "Jamshedpur",
+                "value": "jamshedpur"
+            },
+            {
+                "label": "Dhanbad",
+                "value": "dhanbad"
+            }
+        ],
+        "karnataka": [
+            {
+                "label": "Bengaluru",
+                "value": "bengaluru"
+            },
+            {
+                "label": "Mysuru",
+                "value": "mysuru"
+            },
+            {
+                "label": "Mangaluru",
+                "value": "mangaluru"
+            }
+        ],
+        "kerala": [
+            {
+                "label": "Thiruvananthapuram",
+                "value": "thiruvananthapuram"
+            },
+            {
+                "label": "Kochi",
+                "value": "kochi"
+            },
+            {
+                "label": "Kozhikode",
+                "value": "kozhikode"
+            }
+        ],
+        "madhyaPradesh": [
+            {
+                "label": "Bhopal",
+                "value": "bhopal"
+            },
+            {
+                "label": "Indore",
+                "value": "indore"
+            },
+            {
+                "label": "Gwalior",
+                "value": "gwalior"
+            }
+        ],
+        "maharashtra": [
+            {
+                "label": "Mumbai",
+                "value": "mumbai"
+            },
+            {
+                "label": "Pune",
+                "value": "pune"
+            },
+            {
+                "label": "Nagpur",
+                "value": "nagpur"
+            }
+        ],
+        "manipur": [
+            {
+                "label": "Imphal",
+                "value": "imphal"
+            },
+            {
+                "label": "Thoubal",
+                "value": "thoubal"
+            },
+            {
+                "label": "Churachandpur",
+                "value": "churachandpur"
+            }
+        ],
+        "meghalaya": [
+            {
+                "label": "Shillong",
+                "value": "shillong"
+            },
+            {
+                "label": "Tura",
+                "value": "tura"
+            },
+            {
+                "label": "Nongstoin",
+                "value": "nongstoin"
+            }
+        ],
+        "mizoram": [
+            {
+                "label": "Aizawl",
+                "value": "aizawl"
+            },
+            {
+                "label": "Lunglei",
+                "value": "lunglei"
+            },
+            {
+                "label": "Champhai",
+                "value": "champhai"
+            }
+        ],
+        "nagaland": [
+            {
+                "label": "Kohima",
+                "value": "kohima"
+            },
+            {
+                "label": "Dimapur",
+                "value": "dimapur"
+            },
+            {
+                "label": "Mokokchung",
+                "value": "mokokchung"
+            }
+        ],
+        "odisha": [
+            {
+                "label": "Bhubaneswar",
+                "value": "bhubaneswar"
+            },
+            {
+                "label": "Cuttack",
+                "value": "cuttack"
+            },
+            {
+                "label": "Rourkela",
+                "value": "rourkela"
+            }
+        ],
+        "punjab": [
+            {
+                "label": "Ludhiana",
+                "value": "ludhiana"
+            },
+            {
+                "label": "Amritsar",
+                "value": "amritsar"
+            },
+            {
+                "label": "Jalandhar",
+                "value": "jalandhar"
+            }
+        ],
+        "rajasthan": [
+            {
+                "label": "Jaipur",
+                "value": "jaipur"
+            },
+            {
+                "label": "Udaipur",
+                "value": "udaipur"
+            },
+            {
+                "label": "Jodhpur",
+                "value": "jodhpur"
+            }
+        ],
+        "sikkim": [
+            {
+                "label": "Gangtok",
+                "value": "gangtok"
+            },
+            {
+                "label": "Namchi",
+                "value": "namchi"
+            },
+            {
+                "label": "Geyzing",
+                "value": "geyzing"
+            }
+        ],
+        "tamilNadu": [
+            {
+                "label": "Chennai",
+                "value": "chennai"
+            },
+            {
+                "label": "Coimbatore",
+                "value": "coimbatore"
+            },
+            {
+                "label": "Madurai",
+                "value": "madurai"
+            }
+        ],
+        "telangana": [
+            {
+                "label": "Hyderabad",
+                "value": "hyderabad"
+            },
+            {
+                "label": "Warangal",
+                "value": "warangal"
+            },
+            {
+                "label": "Nizamabad",
+                "value": "nizamabad"
+            }
+        ],
+        "tripura": [
+            {
+                "label": "Agartala",
+                "value": "agartala"
+            },
+            {
+                "label": "Udaipur",
+                "value": "udaipur"
+            },
+            {
+                "label": "Kailashahar",
+                "value": "kailashahar"
+            }
+        ],
+        "uttarPradesh": [
+            {
+                "label": "Lucknow",
+                "value": "lucknow"
+            },
+            {
+                "label": "Kanpur",
+                "value": "kanpur"
+            },
+            {
+                "label": "Varanasi",
+                "value": "varanasi"
+            }
+        ],
+        "uttarakhand": [
+            {
+                "label": "Dehradun",
+                "value": "dehradun"
+            },
+            {
+                "label": "Haridwar",
+                "value": "haridwar"
+            },
+            {
+                "label": "Nainital",
+                "value": "nainital"
+            }
+        ],
+        "westBengal": [
+            {
+                "label": "Kolkata",
+                "value": "kolkata"
+            },
+            {
+                "label": "Howrah",
+                "value": "howrah"
+            },
+            {
+                "label": "Darjeeling",
+                "value": "darjeeling"
+            }
+        ],
+        "andamanAndNicobarIslands": [
+            {
+                "label": "Port Blair",
+                "value": "portBlair"
+            },
+            {
+                "label": "Diglipur",
+                "value": "diglipur"
+            },
+            {
+                "label": "Mayabunder",
+                "value": "mayabunder"
+            }
+        ],
+        "chandigarh": [
+            {
+                "label": "Chandigarh",
+                "value": "chandigarh"
+            }
+        ],
+        "dadraAndNagarHaveliAndDamanAndDiu": [
+            {
+                "label": "Silvassa",
+                "value": "silvassa"
+            },
+            {
+                "label": "Daman",
+                "value": "daman"
+            },
+            {
+                "label": "Diu",
+                "value": "diu"
+            }
+        ],
+        "lakshadweep": [
+            {
+                "label": "Kavaratti",
+                "value": "kavaratti"
+            },
+            {
+                "label": "Agatti",
+                "value": "agatti"
+            },
+            {
+                "label": "Minicoy",
+                "value": "minicoy"
+            }
+        ],
+        "delhi": [
+            {
+                "label": "New Delhi",
+                "value": "newDelhi"
+            },
+            {
+                "label": "Old Delhi",
+                "value": "oldDelhi"
+            }
+        ],
+        "puducherry": [
+            {
+                "label": "Puducherry",
+                "value": "puducherry"
+            },
+            {
+                "label": "Karaikal",
+                "value": "karaikal"
+            },
+            {
+                "label": "Mahe",
+                "value": "mahe"
+            }
+        ],
+        "ladakh": [
+            {
+                "label": "Leh",
+                "value": "leh"
+            },
+            {
+                "label": "Kargil",
+                "value": "kargil"
+            }
+        ],
+        "jammuAndKashmir": [
+            {
+                "label": "Srinagar",
+                "value": "srinagar"
+            },
+            {
+                "label": "Jammu",
+                "value": "jammu"
+            },
+            {
+                "label": "Anantnag",
+                "value": "anantnag"
+            }
+        ],
+        "abuDhabi": [
+            {
+                "label": "Abu Dhabi",
+                "value": "abuDhabi"
+            },
+            {
+                "label": "Al Ain",
+                "value": "alAin"
+            },
+            {
+                "label": "Ghayathi",
+                "value": "ghayathi"
+            },
+            {
+                "label": "Madinat Zayed",
+                "value": "madinatZayed"
+            }
+        ],
+        "dubai": [
+            {
+                "label": "Dubai",
+                "value": "dubai"
+            },
+            {
+                "label": "Jebel Ali",
+                "value": "jebelAli"
+            },
+            {
+                "label": "Hatta",
+                "value": "hatta"
+            }
+        ],
+        "sharjah": [
+            {
+                "label": "Sharjah",
+                "value": "sharjah"
+            },
+            {
+                "label": "Khor Fakkan",
+                "value": "khorFakkan"
+            },
+            {
+                "label": "Kalba",
+                "value": "kalba"
+            },
+            {
+                "label": "Dibba Al-Hisn",
+                "value": "dibbaAlHisn"
+            }
+        ],
+        "ajman": [
+            {
+                "label": "Ajman",
+                "value": "ajman"
+            },
+            {
+                "label": "Masfout",
+                "value": "masfout"
+            },
+            {
+                "label": "Manama",
+                "value": "manama"
+            }
+        ],
+        "ummAlQuwain": [
+            {
+                "label": "Umm Al Quwain",
+                "value": "ummAlQuwain"
+            }
+        ],
+        "rasAlKhaimah": [
+            {
+                "label": "Ras Al Khaimah",
+                "value": "rasAlKhaimah"
+            },
+            {
+                "label": "Al Jazirah Al Hamra",
+                "value": "alJazirahAlHamra"
+            }
+        ],
+        "fujairah": [
+            {
+                "label": "Fujairah",
+                "value": "fujairah"
+            },
+            {
+                "label": "Dibba Al-Fujairah",
+                "value": "dibbaAlFujairah"
+            },
+            {
+                "label": "Masafi",
+                "value": "masafi"
+            }
+        ]
+    }
+}

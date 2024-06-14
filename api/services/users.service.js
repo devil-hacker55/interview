@@ -352,15 +352,15 @@ module.exports = {
       });
       console.log("deletePropertyImages propertyadresss done")
     }
-    if (propertyFaq.length > 0) {
-      // let productFaqData = propertyFaq.map((image) => ({
-      //   propertyId: property.id,
-      //   productImage: image,
-      // }));
-      let propertyfaqs = await db.property_faqs.bulkCreate(propertyFaq);
-      await property.addProperty_faqs(propertyfaqs)
+    // if (propertyFaq.length > 0) {
+    //   // let productFaqData = propertyFaq.map((image) => ({
+    //   //   propertyId: property.id,
+    //   //   productImage: image,
+    //   // }));
+    //   let propertyfaqs = await db.property_faqs.bulkCreate(propertyFaq);
+    //   await property.addProperty_faqs(propertyfaqs)
 
-    }
+    // }
     return property;
   },
   getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country) => {
