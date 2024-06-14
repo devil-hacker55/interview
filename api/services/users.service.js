@@ -363,7 +363,7 @@ module.exports = {
     // }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType,locality) => {
     const { limit, offset } = getPagination(page, size);
     const roomTypeCondition = roomType ? {
       [Op.or]: Array.isArray(roomType) ?
@@ -377,6 +377,13 @@ module.exports = {
             [Op.like]: `%${roomType}%`
           }
         }
+    } : {};
+    const searchCondition = search ? {
+      [Op.or]: [
+        { propertyName: { [Op.like]: `%${search}%` } },
+        { '$useraddress.city$': { [Op.like]: `%${search}%` } },
+        { '$useraddress.locality$': { [Op.like]: `%${search}%` } }
+      ]
     } : {};
     //console.log("UsderId",userId)
     let result = await db.properties.findAndCountAll({
@@ -397,18 +404,19 @@ module.exports = {
         //   },
         // }),
         ...roomTypeCondition,
+        ...searchCondition,
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
         ...(promoteAs && { promoteAs: promoteAs }),
 
-        ...(search && {
-          [Op.or]: {
-            propertyName: {
-              [Op.like]: `%${search}%`,
-            },
+        // ...(search && {
+        //   [Op.or]: {
+        //     propertyName: {
+        //       [Op.like]: `%${search}%`,
+        //     },
 
-          },
-        }),
+        //   },
+        // }),
 
         ...(purpose && { purpose: purpose }),
 
@@ -464,6 +472,7 @@ module.exports = {
           model: db.useraddresses,
           where: {
             ...(city && { city: city }),
+            ...(locality && { locality: locality }),
             ...(country && { country: country }),
           },
         },
@@ -511,7 +520,7 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType,locality) => {
     const { limit, offset } = getPagination(page, size);
     //console.log("us111", userId)
     const roomTypeCondition = roomType ? {
@@ -527,6 +536,13 @@ module.exports = {
           }
         }
     } : {};
+    const searchCondition = search ? {
+      [Op.or]: [
+        { propertyName: { [Op.like]: `%${search}%` } },
+        { '$useraddress.city$': { [Op.like]: `%${search}%` } },
+        { '$useraddress.locality$': { [Op.like]: `%${search}%` } }
+      ]
+    } : {};
     let result = await db.properties.findAndCountAll({
       where: {
         admin_status: {
@@ -540,19 +556,20 @@ module.exports = {
         ...(propertyType && { propertyType: propertyType }),
         //...(roomType && { roomType: roomType }),
         ...roomTypeCondition,
+        ...searchCondition,
 
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
         ...(promoteAs && { promoteAs: promoteAs }),
 
-        ...(search && {
-          [Op.or]: {
-            propertyName: {
-              [Op.like]: `%${search}%`,
-            },
+        // ...(search && {
+        //   [Op.or]: {
+        //     propertyName: {
+        //       [Op.like]: `%${search}%`,
+        //     },
 
-          },
-        }),
+        //   },
+        // }),
 
         ...(purpose && { purpose: purpose }),
 
@@ -608,6 +625,7 @@ module.exports = {
           model: db.useraddresses,
           where: {
             ...(city && { city: city }),
+            ...(locality && { locality: locality }),
             ...(country && { country: country }),
           },
         },
