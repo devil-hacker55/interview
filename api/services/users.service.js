@@ -363,7 +363,7 @@ module.exports = {
     // }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType) => {
     const { limit, offset } = getPagination(page, size);
     const roomTypeCondition = roomType ? {
       [Op.or]: Array.isArray(roomType) ?
@@ -386,6 +386,7 @@ module.exports = {
         ...(adminAdded && { adminAdded: adminAdded }),
 
         ...(admin_status && { admin_status: admin_status }),
+        ...(propertyType && { propertyType: propertyType }),
 
         // ...(roomType && {
         //   [Op.or]: {
@@ -510,7 +511,7 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType) => {
     const { limit, offset } = getPagination(page, size);
     //console.log("us111", userId)
     const roomTypeCondition = roomType ? {
@@ -536,7 +537,7 @@ module.exports = {
         ...(adminAdded && { adminAdded: adminAdded }),
 
         ...(admin_status && { admin_status: admin_status }),
-
+        ...(propertyType && { propertyType: propertyType }),
         //...(roomType && { roomType: roomType }),
         ...roomTypeCondition,
 

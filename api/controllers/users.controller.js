@@ -484,7 +484,8 @@ module.exports = {
       req.query.propertyStatus,
       req.query.promoteAs,
       req.query.adminAdded,
-      req.query.country
+      req.query.country,
+      req.query.propertyType
     );
     console.log("ROOM", req.query.roomType)
     if (result.totalrows <= 0) {
@@ -527,7 +528,8 @@ module.exports = {
       req.query.propertyStatus,
       req.query.promoteAs,
       req.query.adminAdded,
-      req.query.country
+      req.query.country,
+      req.query.propertyType
     );
     if (result.totalrows <= 0) {
       res.sendResponse(result);
