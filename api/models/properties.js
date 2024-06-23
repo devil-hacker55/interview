@@ -111,7 +111,7 @@ module.exports = (sequelize, DataTypes) => {
             maintenance_price: DataTypes.DOUBLE,
             possession: DataTypes.ENUM("IMMEDIATE", "1M", "6M", "1Y", "2Y", "3Y", "4Y", "5Y"),
             rera_number: DataTypes.STRING,
-            description: DataTypes.STRING,
+            description: DataTypes.TEXT,
             isDeleted: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: false,

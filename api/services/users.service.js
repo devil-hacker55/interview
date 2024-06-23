@@ -363,21 +363,21 @@ module.exports = {
     // }
     return property;
   },
-  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType,locality) => {
+  getAllProperty: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country, propertyType, locality) => {
     const { limit, offset } = getPagination(page, size);
-    const roomTypeCondition = roomType ? {
-      [Op.or]: Array.isArray(roomType) ?
-        roomType.map(type => ({
-          roomType: {
-            [Op.like]: `%${type}%`
-          }
-        })) :
-        {
-          roomType: {
-            [Op.like]: `%${roomType}%`
-          }
-        }
-    } : {};
+    // const roomTypeCondition = roomType ? {
+    //   [Op.or]: Array.isArray(roomType) ?
+    //     roomType.map(type => ({
+    //       roomType: {
+    //         [Op.like]: `%${type}%`
+    //       }
+    //     })) :
+    //     {
+    //       roomType: {
+    //         [Op.like]: `%${roomType}%`
+    //       }
+    //     }
+    // } : {};
     const searchCondition = search ? {
       [Op.or]: [
         { propertyName: { [Op.like]: `%${search}%` } },
@@ -395,15 +395,8 @@ module.exports = {
         ...(admin_status && { admin_status: admin_status }),
         ...(propertyType && { propertyType: propertyType }),
 
-        // ...(roomType && {
-        //   [Op.or]: {
-        //     roomType: {
-        //       [Op.like]: `%${roomType}%`,
-        //     },
-
-        //   },
-        // }),
-        ...roomTypeCondition,
+        ...(roomType && { roomType: roomType }),
+        //...roomTypeCondition,
         ...searchCondition,
         ...(propertyStatus && { propertyStatus: propertyStatus }),
 
@@ -520,22 +513,22 @@ module.exports = {
     const response = getPagingData({ ...result, rows: propertiesWithLikes }, page, limit);
     return response;
   },
-  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country,propertyType,locality) => {
+  getAllPropertyCustomer: async (userId, search, page, size, purpose, admin_status, city, category, roomType, propertyStatus, promoteAs, adminAdded, country, propertyType, locality) => {
     const { limit, offset } = getPagination(page, size);
     //console.log("us111", userId)
-    const roomTypeCondition = roomType ? {
-      [Op.or]: Array.isArray(roomType) ?
-        roomType.map(type => ({
-          roomType: {
-            [Op.like]: `%${type}%`
-          }
-        })) :
-        {
-          roomType: {
-            [Op.like]: `%${roomType}%`
-          }
-        }
-    } : {};
+    // const roomTypeCondition = roomType ? {
+    //   [Op.or]: Array.isArray(roomType) ?
+    //     roomType.map(type => ({
+    //       roomType: {
+    //         [Op.like]: `%${type}%`
+    //       }
+    //     })) :
+    //     {
+    //       roomType: {
+    //         [Op.like]: `%${roomType}%`
+    //       }
+    //     }
+    // } : {};
     const searchCondition = search ? {
       [Op.or]: [
         { propertyName: { [Op.like]: `%${search}%` } },
@@ -554,8 +547,8 @@ module.exports = {
 
         ...(admin_status && { admin_status: admin_status }),
         ...(propertyType && { propertyType: propertyType }),
-        //...(roomType && { roomType: roomType }),
-        ...roomTypeCondition,
+        ...(roomType && { roomType: roomType }),
+        //...roomTypeCondition,
         ...searchCondition,
 
         ...(propertyStatus && { propertyStatus: propertyStatus }),
@@ -1068,7 +1061,7 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "count", 
+      attributes: ["id", "count",
         [db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(contactedAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'contactedAt'],
         /*[db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(property_visits.createdAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'pp']*/"userId", "status"],
       include: [{
@@ -1359,7 +1352,7 @@ module.exports = {
     let data = await db.contactus.create(reqObj)
     return data
   },
-  getAllContactUs: async (page, size, search,status) => {
+  getAllContactUs: async (page, size, search, status) => {
     const { limit, offset } = getPagination(page, size);
     console.log("fff", search)
     let result = await db.contactus.findAndCountAll({
