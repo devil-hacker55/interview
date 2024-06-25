@@ -628,8 +628,8 @@ module.exports = {
 
   contactProperty: async (req, res, next) => {
     let userId = req.params.userId
-    let propertyId = req.body.propertyId
-    let result = await userService.contactProperty(userId, propertyId);
+    let data = req.body
+    let result = await userService.contactProperty(userId, data);
     res.sendResponse(result);
   },
 
@@ -789,6 +789,7 @@ module.exports = {
   },
   cabBookingUsers: async (req, res, next) => {
     let result = await userService.cabBookingUsers(req.params.propertyId)
+    console.log("HHH",result)
     result.propertyData.coverImage = result.propertyData.coverImage
       ? await getUrl(result.propertyData.coverImage)
       : null;

@@ -22,6 +22,18 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
                 defaultValue: DataTypes.UUIDV4,
             },
+            name: {
+                type: DataTypes.STRING
+            },
+            email: {
+                type: DataTypes.STRING
+            },
+            mobile: {
+                type: DataTypes.STRING
+            },
+            query: {
+                type: DataTypes.STRING
+            },
             purpose: {
                 type: DataTypes.ENUM("ZOOM", "CAB","BROCHURE"),
                 // required: true,

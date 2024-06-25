@@ -17,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
         }
     };
     property_visits.init({
+        name: {
+            type: DataTypes.STRING
+        },
+        email: {
+            type: DataTypes.STRING
+        },
+        mobile: {
+            type: DataTypes.STRING
+        },
+        query: {
+            type: DataTypes.STRING
+        },
         contactedAt: {
             type: DataTypes.DATE,
             required: true

@@ -36,6 +36,7 @@ const {
 const { userTypes, roles } = require("../utils/strings");
 const { getUrl, deleteFile } = require("../helpers/aws-s3");
 const { getUserId, editProperty, downloadBrochure } = require("../controllers/users.controller");
+const { query } = require("express");
 
 for (let model of Object.keys(db)) {
   if (models[model].name === "Sequelize") continue;
@@ -740,13 +741,13 @@ module.exports = {
     };
   },
 
-  contactProperty: async (userId, propertyId) => {
+  contactProperty: async (userId, reqObj) => {
     await module.exports.getUserById(userId);
-    await module.exports.getPropertyById(propertyId);
+    await module.exports.getPropertyById(reqObj.propertyId);
     let existingVisit = await db.property_visits.findOne({
       where: {
         userId: userId,
-        propertyId: propertyId
+        propertyId: reqObj.propertyId
       },
       include: {
         model: db.properties,
@@ -765,9 +766,9 @@ module.exports = {
       let countValue = existingVisit.count
       await existingVisit.update({ contactedAt: new Date(), count: countValue + 1, status: "PENDING" });
 
-      console.log(`Property visit updated: Client ${userId}, Property ${propertyId}`);
+      console.log(`Property visit updated: Client ${userId}, Property ${reqObj.propertyId}`);
       return {
-        message: `Property visit updated: Client ${userId}, Property ${propertyId}`,
+        message: `Property visit updated: Client ${userId}, Property ${reqObj.propertyId}`,
         ownerName: existingVisit.property.user.firstName,
         ownerMobile: existingVisit.property.user.mobile
       }
@@ -775,7 +776,7 @@ module.exports = {
     else {
       let property = await db.properties.findOne({
         where: {
-          id: propertyId
+          id: reqObj.propertyId
         },
         include: {
           model: db.users,
@@ -785,15 +786,19 @@ module.exports = {
       })
       // If no existing visit record is found, create a new one
       await db.property_visits.create({
+        name:reqObj.name,
+        email:reqObj.email,
+        mobile:reqObj.mobile,
+        query:reqObj.query,
         userId: userId,
-        propertyId: propertyId,
+        propertyId: reqObj.propertyId,
         count: 1,
         status: "PENDING",
         contactedAt: new Date() // Current timestamp
       });
 
       return {
-        message: `Property visit updated: Client ${userId}, Property ${propertyId}`,
+        message: `Property visit updated: Client ${userId}, Property ${reqObj.propertyId}`,
         ownerName: property.user.firstName,
         ownerMobile: property.user.mobile
       }
@@ -1061,13 +1066,13 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "count",
+      attributes: ["id", "count","name","email","mobile","query",
         [db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(contactedAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'contactedAt'],
         /*[db.sequelize.literal(`DATE_FORMAT(CONVERT_TZ(property_visits.createdAt, '+00:00', '+05:30'), '%a %d/%m/%Y %h:%i %p')`), 'pp']*/"userId", "status"],
-      include: [{
-        model: db.users,
-        attributes: ["id", "firstName", "mobile", "email"],
-      }]
+      // include: [{
+      //   model: db.users,
+      //   attributes: ["id", "firstName", "mobile", "email"],
+      // }]
     });
     let data = await db.properties.findOne({
       where: {
@@ -1193,11 +1198,11 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "purpose", "userId", "status"],
-      include: [{
-        model: db.users,
-        attributes: ["id", "firstName", "mobile", "email"],
-      }]
+      attributes: ["id", "purpose", "userId", "status","name","email","mobile","query"],
+      // include: [{
+      //   model: db.users,
+      //   attributes: ["id", "firstName", "mobile", "email"],
+      // }]
     });
     let data = await db.properties.findOne({
       where: {
@@ -1240,11 +1245,11 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "purpose", "userId", "status"],
-      include: [{
-        model: db.users,
-        attributes: ["id", "firstName", "mobile", "email"],
-      }]
+      attributes: ["id", "purpose", "userId", "status","name","email","mobile","query"],
+      // include: [{
+      //   model: db.users,
+      //   attributes: ["id", "firstName", "mobile", "email"],
+      // }]
     });
     let data = await db.properties.findOne({
       where: {
@@ -1287,11 +1292,11 @@ module.exports = {
       },
       //group: ["userId"],
       order: [["createdAt", "DESC"]],
-      attributes: ["id", "purpose", "userId", "status"],
-      include: [{
-        model: db.users,
-        attributes: ["id", "firstName", "mobile", "email"],
-      }]
+      attributes: ["id", "purpose", "userId", "status","name","email","mobile","query"],
+      // include: [{
+      //   model: db.users,
+      //   attributes: ["id", "firstName", "mobile", "email"],
+      // }]
     });
     let data = await db.properties.findOne({
       where: {
