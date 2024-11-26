@@ -16,6 +16,8 @@ const { PromiseHandler } = require('../utils/commonUtils');
 
 router.get('/', (req, res) => res.status(200).send({ data: "welcome" }));
 
-router.use('/users', require('./users.routes'));
+//router.use('/users', require('./users.routes'));
+
+router.use('/interview', require('./interview.routes'));
 
 module.exports = router
