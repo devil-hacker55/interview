@@ -14,11 +14,6 @@ const express = require("express");
 const router = express.Router();
 const { PromiseHandler } = require("../middleware/error.handler");
 const interviewController = require("../controllers/interview.controller");
-const authorizeNew = require('../middleware/auth')
-const { permissions, accessLevel, userTypes } = require('../utils/strings');
-const { imageUpload, deleteFile } = require("../helpers/aws-s3");
-const fs = require("fs");
-const path = require("path");
 
 router.get("/", (req, res) =>
   res.status(200).send({ data: "welcome to users routes" })

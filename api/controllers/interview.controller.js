@@ -11,22 +11,9 @@
  */
 
 // required
-const db = require("../models");
+
 const interviewService = require("../services/interview.service");
-const createHttpError = require("http-errors");
-const commonUtils = require("../utils/commonUtils");
-const { deleteFile, getUrl } = require("../helpers/aws-s3");
-const logger = require("../helpers/logger");
-const moment = require("moment");
-const { PromiseHandler } = require("../middleware/error.handler");
-const {
-  comparePassword,
-  hash,
-  generateJwtToken,
-  generateRefreshToken,
-} = require("../helpers/token");
-const { query } = require("express");
-const { userTypes } = require("../utils/strings");
+
 module.exports = {
   // interview route, this will return the product list
   getProducts: async (req, res, next) => {
